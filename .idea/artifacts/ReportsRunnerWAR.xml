@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ReportsRunnerWAR">
+    <output-path>D:/apache-tomcat-8.0.53/webapps/ReportsRunner</output-path>
+    <root id="archive" name="ReportsRunnerWAR.war">
+      <element id="artifact" artifact-name="ReportsRunner" />
+    </root>
+  </artifact>
+</component>
