@@ -8,6 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -17,6 +19,8 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebMvc
+@EnableAsync
+@EnableTransactionManagement
 @ComponentScan(basePackages = "hk.com.Reports")
 public class AppConfig {
     @Bean
@@ -28,6 +32,7 @@ public class AppConfig {
         return viewResolver;
     }
 
+    @Autowired
     @Bean(name = "dataSource")
     public DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
@@ -53,4 +58,12 @@ public class AppConfig {
         return sessionBuilder.buildSessionFactory();
     }
 
+    @Autowired
+    @Bean(name = "transactionManager")
+    public HibernateTransactionManager getTransactionManager(
+            SessionFactory sessionFactory) {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager(
+                sessionFactory);
+        return transactionManager;
+    }
 }
