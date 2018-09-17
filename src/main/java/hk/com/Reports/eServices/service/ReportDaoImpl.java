@@ -29,6 +29,8 @@ public class ReportDaoImpl implements ReportDao{
 
     @Override
     public Report getReport(int id) {
-        return null;
+        Session session = sessionFactory.getCurrentSession();
+        Report report = (Report) session.get(Report.class, id);
+        return report;
     }
 }
