@@ -26,28 +26,4 @@ public class AppConfig {
         return viewResolver;
     }
 
-    @Bean(name = "dataSource")
-    public DataSource getDataSource() {
-        BasicDataSource dataSource = new BasicDataSource();
-
-        dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-        dataSource.setUrl("jdbc:oracle:thin:@172.168.0.48:1521:ORCL");
-        dataSource.setUsername("DBATIDBSFCLONE");
-        dataSource.setPassword("admin");
-        return dataSource;
-    }
-
-//    @Autowired
-//    @Bean(name = "sessionFactory")
-//    public SessionFactory getSessionFactory() {
-//        DataSource dataSource = getDataSource();
-//        LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(dataSource);
-//        sessionBuilder.addAnnotatedClasses(User.class, UserRole.class);
-//        sessionBuilder.scanPackages("au.com.nmcgroup.model");
-//        sessionBuilder.setProperty("hibernate.show_sql", "true");
-//        sessionBuilder.setProperty("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
-//
-//        return sessionBuilder.buildSessionFactory();
-//    }
-
 }
