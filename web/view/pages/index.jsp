@@ -24,15 +24,18 @@
             $(".modal-body div").remove();
             $.ajax({
                 url: "${pageContext.request.contextPath}/getReportById/" + id, success: function (result) {
-                    $(".modal-body").append("<div><p>" + JSON.stringify(result) + "</p></div>");
-                    obj = JSON.parse(result);
-                    obj.each(function(){
-                        alert(obj.startdate);
-                    })
+                    obj = JSON.parse(JSON.stringify(result));
+                    $(".modal-body").append("<div><p>" + createTable(obj)+ "</p></div>");
                     $(".modal-body").append("</div>");
                 }
             })
+        }
 
+        function createTable(obj) {
+            var content = "<table>";
+            var tr = "<tr><td>Report ID: </td><td>"+obj.reportId+"</td></tr>"
+            content = tr+"</table>"
+            return content;
         }
     </script>
 </head>
