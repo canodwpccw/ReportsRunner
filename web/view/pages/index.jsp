@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
@@ -14,17 +16,28 @@
           href="/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
     <title>Title</title>
     <script>
-        $(document).ready(function(){
-            // $(".modal-body").appe
+        $(document).ready(function () {
+            var obj;
         })
-        function openModal(){
+
+        function openModal(id) {
             $(".modal-body div").remove();
-            $(".modal-body").append("<p>TEST STRING</p>")
+            $.ajax({
+                url: "${pageContext.request.contextPath}/getReportById/" + id, success: function (result) {
+                    $(".modal-body").append("<div><p>" + JSON.stringify(result) + "</p></div>");
+                    obj = JSON.parse(result);
+                    obj.each(function(){
+                        alert(obj.startdate);
+                    })
+                    $(".modal-body").append("</div>");
+                }
+            })
+
         }
     </script>
 </head>
 <body>
-<div class="container"><br/>
+<div><br/>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -35,19 +48,22 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>ESASE202</td>
-            <td></td>
-            <td></td>
-            <td>
-                <button type="button" id="btnOpen" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="openModal()">
-                    Open modal
-                </button>
-            </td>
-        </tr>
+        <c:forEach var="report" items="${reports}">
+            <tr>
+                <td>${report.reportId}</td>
+                <td></td>
+                <td></td>
+                <td>
+                    <button type="button" id="btnOpen" class="btn btn-primary" data-toggle="modal"
+                            data-target="#myModal"
+                            onclick="openModal(${report.id})">
+                        Open modal
+                    </button>
+                </td>
+            </tr>
+        </c:forEach>
         </tbody>
     </table>
-
     <div class="modal" id="myModal">
         <div class="modal-dialog">
             <div class="modal-content">

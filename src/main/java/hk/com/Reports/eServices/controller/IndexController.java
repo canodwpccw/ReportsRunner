@@ -5,10 +5,7 @@ import hk.com.Reports.eServices.service.ReportDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -28,9 +25,9 @@ public class IndexController {
     }
 
 
-    @RequestMapping(value = "/listReports",method = RequestMethod.GET, produces ="application/json")
+    @RequestMapping(value = "/getReportById/{id}",method = RequestMethod.GET, produces ="application/json")
     @ResponseBody
-    public Report getReportById(@ModelAttribute("id") int id){
+    public Report getReportById(@PathVariable("id") int id){
         return reportDao.getReport(id);
     }
 
