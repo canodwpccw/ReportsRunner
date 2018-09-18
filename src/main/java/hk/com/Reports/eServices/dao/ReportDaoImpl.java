@@ -1,4 +1,4 @@
-package hk.com.Reports.eServices.service;
+package hk.com.Reports.eServices.dao;
 
 import hk.com.Reports.eServices.model.Report;
 import org.hibernate.Criteria;

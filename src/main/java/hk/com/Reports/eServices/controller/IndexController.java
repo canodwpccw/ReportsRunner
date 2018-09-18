@@ -1,7 +1,7 @@
 package hk.com.Reports.eServices.controller;
 
 import hk.com.Reports.eServices.model.Report;
-import hk.com.Reports.eServices.service.ReportDao;
+import hk.com.Reports.eServices.dao.ReportDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
