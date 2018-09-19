@@ -2,6 +2,7 @@ package hk.com.Reports.eServices.controller;
 
 import hk.com.Reports.eServices.model.Report;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,33 +21,43 @@ import java.util.Iterator;
 @Controller
 public class ReportController {
 
-    @RequestMapping(value = "/addReport",method = RequestMethod.GET)
-    public ModelAndView addReportGet(){
-        ModelAndView mav =  new ModelAndView();
+    @RequestMapping(value = "/addReport", method = RequestMethod.GET)
+    public ModelAndView addReportGet() {
+        ModelAndView mav = new ModelAndView();
         mav.setViewName("addOrEditReport");
-        mav.addObject("report",new Report());
-        mav.addObject("action","add");
+        mav.addObject("report", new Report());
+        mav.addObject("action", "add");
         return mav;
     }
 
-    @RequestMapping(value = "/addReport",method = RequestMethod.POST)
-    public ModelAndView addReportPost(@ModelAttribute("report")Report report){
-        ModelAndView mav =  new ModelAndView();
+    @RequestMapping(value = "/editReport", method = RequestMethod.GET)
+    public ModelAndView editReportGet() {
+        ModelAndView mav = new ModelAndView();
         mav.setViewName("addOrEditReport");
-        report.getTemplateFilename();
-        mav.addObject("action","add");
+        mav.addObject("report", new Report());
+        mav.addObject("action", "edit");
         return mav;
     }
 
     @RequestMapping(value = "/addReport", method = RequestMethod.POST)
-    public @ResponseBody String upload( MultipartHttpServletRequest request, HttpServletResponse response) throws IOException {
-        File jasperFile = getFile(request);
-        String parameters = request.getParameter("parameters");
-        return  jasperFile.getName() + " upload successful!" + "with parameters: " + parameters;
+    public ModelAndView addReportPost(@ModelAttribute("report") Report report) {
+        ModelAndView mav = new ModelAndView();
+//        modelMap.addAttribute("report", report);
+        report.getId();
+        mav.setViewName("addOrEditReport");
+        return mav;
     }
 
-    private File getFile(MultipartHttpServletRequest request)  throws IOException {
-        Iterator<String> itr =  request.getFileNames();
+//    @RequestMapping(value = "/addReport", method = RequestMethod.POST)
+//    public @ResponseBody String upload( MultipartHttpServletRequest request, HttpServletResponse response,@ModelAttribute("report")Report report) throws IOException {
+//        File jasperFile = getFile(request);
+//        String parameters = request.getParameter("parameters");
+//        return  jasperFile.getName() + " upload successful!" + "with parameters: " + parameters;
+//
+//    }
+
+    private File getFile(MultipartHttpServletRequest request) throws IOException {
+        Iterator<String> itr = request.getFileNames();
         MultipartFile mpf = request.getFile(itr.next());
 
         InputStream in = mpf.getInputStream();
@@ -61,4 +72,6 @@ public class ReportController {
         f.close();
         return jasperFile;
     }
+
+
 }

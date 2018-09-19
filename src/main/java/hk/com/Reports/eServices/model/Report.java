@@ -1,8 +1,10 @@
 package hk.com.Reports.eServices.model;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.File;
 import java.util.Date;
 
 
@@ -49,4 +51,8 @@ public class Report {
 
     @Column(name = "isYearly")
     private Boolean isYearly;
+
+    @Transient
+    private MultipartFile file;
+
 }

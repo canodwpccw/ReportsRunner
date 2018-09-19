@@ -37,7 +37,6 @@ public class AppConfig {
     @Bean(name = "dataSource")
     public DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
 //        dataSource.setUrl("jdbc:oracle:thin:@172.168.0.48:1521:ORCL");
         dataSource.setUrl("jdbc:oracle:thin:@172.168.0.48:1521/xe");
