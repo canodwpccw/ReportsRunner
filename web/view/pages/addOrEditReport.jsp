@@ -44,8 +44,8 @@
                 <td><form:input type="text" path="reportId"/></td>
             </tr>
             <tr>
-                <td><form:label path="templateLocation">Template Location:</form:label></td>
-                <td><input type="file" name="templateLocation"/></td>
+                <td><form:label path="templateFilename">Template Location:</form:label></td>
+                <td><input type="file" name="templateFilename"/></td>
             </tr>
             <tr>
                 <td><form:label path="parameters">Parameters:</form:label></td>
