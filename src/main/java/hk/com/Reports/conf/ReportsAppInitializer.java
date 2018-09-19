@@ -35,7 +35,7 @@ public class ReportsAppInitializer extends AbstractAnnotationConfigDispatcherSer
         return multipartConfigElement;
     }
 
-    private static final String LOCATION = "C:\\Server\\Apache\\Tomcat\\tmp"; // Temporary location where files will be stored
+    private static final String LOCATION = "C:\\temp"; // Temporary location where files will be stored
     private static final long MAX_FILE_SIZE = 536870912; // 5MB : Max file size. Beyond that size spring will throw exception.
     private static final long MAX_REQUEST_SIZE = 536870912; // 512MB : Total request size containing Multi part.
     private static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk
