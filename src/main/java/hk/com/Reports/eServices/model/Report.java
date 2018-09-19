@@ -22,11 +22,14 @@ public class Report {
     @Column(name = "reportId")
     private String reportId;
 
+    @Column(name = "isActive")
+    private Boolean isActive;
+
     @Column(name = "parameters")
     private String parameters;
 
-    @Column(name = "templateLocation")
-    private String templateLocation;
+    @Column(name = "templateFilename")
+    private String templateFilename;
 
     @Column(name = "isDaily")
     private Boolean isDaily;
