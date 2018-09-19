@@ -3,6 +3,7 @@ package hk.com.Reports.eServices.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 
 @Entity
@@ -18,6 +19,12 @@ public class Report {
 
     @Column(name = "modifier")
     private String modifier;
+
+    @Column(name = "dateCreated")
+    private Date dateCreated;
+
+    @Column(name = "timestamp")
+    private Date timestamp;
 
     @Column(name = "reportId")
     private String reportId;
