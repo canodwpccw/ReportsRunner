@@ -22,6 +22,9 @@ public class Report {
     @Column(name = "reportId")
     private String reportId;
 
+    @Column(name = "isActive")
+    private Boolean isActive;
+
     @Column(name = "parameters")
     private String parameters;
 
