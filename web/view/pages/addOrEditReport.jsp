@@ -10,25 +10,38 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
-    <script src="/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/webjars/jquery/3.1.1/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
 
     <script>
         function addRow() {
             var rowCount = $('#paramTable>tbody:last>tr').length;
             var trString = " " +
                 "<tr>\n" +
-                    "<td>\n" +
-                        "<input type=\"text\" id=\"keyInput-"+rowCount+"\" class=\"keyinput\"/>\n" +
-                    "</td>\n" +
-                    "<td>\n" +
-                        "<input type=\"text\" id=\"valueInput-"+rowCount+"\" class=\"valueinput\"/>\n" +
-                    "</td>\n" +
+                "<td>\n" +
+                "<input type=\"text\" id=\"keyInput-" + rowCount + "\" class=\"keyinput\"/>\n" +
+                "</td>\n" +
+                "<td>\n" +
+                "<input type=\"text\" id=\"valueInput-" + rowCount + "\" class=\"valueinput\"/>\n" +
+                "</td>\n" +
                 "</tr>";
             $("#paramTable>tbody:last").append(trString);
         }
 
+        function submitForm() {
+            var keyInput = new Array();
+            <%--$.ajax({--%>
+                <%--url: "${pageContext.request.contextPath}/${action}Report/", success: function (result) {--%>
 
+                <%--}--%>
+            <%--})--%>
+
+            $(".keyinput").each(function (i, row) {
+                var key = $("#keyInput-" + i).val();
+                var value = $("#valueInput-" + i).val();
+                alert(ki);
+            });
+        }
     </script>
     <link rel="stylesheet"
           href="/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
@@ -36,7 +49,7 @@
 </head>
 <body>
 <div>
-    <form:form id="" method="post" action="${pageContext.request.contextPath}/${action}Report" modelAttribute="report">
+    <form:form id="" method="post" action="${pageContext.request.contextPath}/${action}Report" modelAttribute="report" enctype="multipart/form-data">
         <table id="formTable" class="table">
             <tbody>
             <tr>
@@ -44,11 +57,14 @@
                 <td><form:input type="text" path="reportId"/></td>
             </tr>
             <tr>
-                <td><form:label path="templateFilename">Template Location:</form:label></td>
-                <td><input type="file" name="templateFilename"/></td>
+                <td><form:label path="file">Template Location:</form:label></td>
+                <td><input type="file" name="file"/></td>
             </tr>
             <tr>
-                <td><form:label path="parameters">Parameters:</form:label></td>
+                <td>
+                    <form:label path="parameters">Parameters:</form:label>
+                    <form:hidden path="parameters"/>
+                </td>
                 <td>
                     <table id="paramTable">
                         <tr>
@@ -85,7 +101,8 @@
                 <td></td>
             </tr>
             <tr>
-                <td colspan="2"><input type="submit"/></td>
+                <%--<td colspan="2"><input type="button" value="Submit" onclick="submitForm()"/></td>--%>
+                <td colspan="2"><input type="submit" value="Submit"/></td>
             </tr>
             </tbody>
         </table>
