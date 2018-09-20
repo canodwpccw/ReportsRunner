@@ -3,9 +3,12 @@ package hk.com.Reports.conf;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -22,8 +25,12 @@ import javax.sql.DataSource;
 @EnableWebMvc
 @EnableAsync
 @EnableTransactionManagement
-@ComponentScan(basePackages = "hk.com.Reports")
+@ComponentScan(basePackages = "hk.com.Reports.*")
+@PropertySource("classpath:config.properties")
 public class AppConfig {
+    @Autowired
+    private Environment env;
+
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -38,11 +45,9 @@ public class AppConfig {
     public DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-//        dataSource.setUrl("jdbc:oracle:thin:@172.168.0.48:1521:ORCL");
-        dataSource.setUrl("jdbc:oracle:thin:@172.168.0.48:1521/xe");
-//        dataSource.setUsername("DBATIDBSFCLONE");
-        dataSource.setUsername("DBATIDBSF");
-        dataSource.setPassword("admin");
+        dataSource.setUrl(env.getProperty("db.eService.host"));
+        dataSource.setUsername(env.getProperty("db.eService.username"));
+        dataSource.setPassword(env.getProperty("db.eService.password"));
         return dataSource;
     }
 
