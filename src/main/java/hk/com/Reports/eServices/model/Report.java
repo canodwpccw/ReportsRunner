@@ -53,6 +53,6 @@ public class Report {
     private Boolean isYearly;
 
     @Transient
-    private MultipartFile file;
+    private MultipartFile[] file;
 
 }
