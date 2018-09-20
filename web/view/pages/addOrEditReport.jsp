@@ -29,18 +29,16 @@
         }
 
         function submitForm() {
-            var keyInput = new Array();
-            <%--$.ajax({--%>
-                <%--url: "${pageContext.request.contextPath}/${action}Report/", success: function (result) {--%>
-
-                <%--}--%>
-            <%--})--%>
-
+            var params = [];
+            var parameter = "[";
             $(".keyinput").each(function (i, row) {
                 var key = $("#keyInput-" + i).val();
                 var value = $("#valueInput-" + i).val();
-                alert(ki);
+                params[i]="{'key':'"+key+"','value':'"+value+"'}";
             });
+            parameter+=params+"]";
+            $("#parameters").val(parameter);
+            $("#reportForm").submit();
         }
     </script>
     <link rel="stylesheet"
@@ -49,7 +47,7 @@
 </head>
 <body>
 <div>
-    <form:form id="" method="post" action="${pageContext.request.contextPath}/${action}Report" modelAttribute="report" enctype="multipart/form-data">
+    <form:form id="reportForm" method="post" action="${pageContext.request.contextPath}/${action}Report" modelAttribute="report" enctype="multipart/form-data">
         <table id="formTable" class="table">
             <tbody>
             <tr>
@@ -57,8 +55,8 @@
                 <td><form:input type="text" path="reportId"/></td>
             </tr>
             <tr>
-                <td><form:label path="file">Template Location:</form:label></td>
-                <td><input type="file" name="file"/></td>
+                <td><form:label path="multipartFiles">Template Location:</form:label></td>
+                <td><input type="file" name="multipartFiles" multiple/></td>
             </tr>
             <tr>
                 <td>
@@ -98,11 +96,24 @@
                 </td>
             </tr>
             <tr>
-                <td></td>
+                <td><form:label path="isDaily">Is Daily?</form:label></td>
+                <td><form:checkbox path="isDaily"/></td>
             </tr>
             <tr>
-                <%--<td colspan="2"><input type="button" value="Submit" onclick="submitForm()"/></td>--%>
-                <td colspan="2"><input type="submit" value="Submit"/></td>
+                <td><form:label path="isWeekly">Is Weekly?</form:label></td>
+                <td><form:checkbox path="isWeekly"/></td>
+            </tr>
+            <tr>
+                <td><form:label path="isMonthly">Is Monthly?</form:label></td>
+                <td><form:checkbox path="isMonthly"/></td>
+            </tr>
+            <tr>
+                <td><form:label path="isYearly">Is Yearly?</form:label></td>
+                <td><form:checkbox path="isYearly"/></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="button" value="Submit" onclick="submitForm()"/></td>
+                <%--<td colspan="2"><input type="submit" value="Submit"/></td>--%>
             </tr>
             </tbody>
         </table>
