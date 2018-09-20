@@ -42,7 +42,7 @@
         }
     </script>
     <link rel="stylesheet"
-          href="/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
+          href="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
     <title>Title</title>
 </head>
 <body>
