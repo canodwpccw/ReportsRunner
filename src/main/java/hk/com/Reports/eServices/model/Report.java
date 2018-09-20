@@ -1,8 +1,11 @@
 package hk.com.Reports.eServices.model;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.File;
+import java.util.Date;
 
 
 @Entity
@@ -18,6 +21,12 @@ public class Report {
 
     @Column(name = "modifier")
     private String modifier;
+
+    @Column(name = "dateCreated")
+    private Date dateCreated;
+
+    @Column(name = "timestamp")
+    private Date timestamp;
 
     @Column(name = "reportId")
     private String reportId;
@@ -42,4 +51,8 @@ public class Report {
 
     @Column(name = "isYearly")
     private Boolean isYearly;
+
+    @Transient
+    private MultipartFile[] multipartFiles;
+
 }
