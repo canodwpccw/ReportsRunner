@@ -24,18 +24,19 @@
                 autoclose: true,
                 todayHighlight: true
             }).datepicker('update', new Date());
+        })
 
+        function buildParam(){
             var  obj = [{key:'REPORT_ID',value:''},{key:'LOCATION',value:''},
                 {key:'TRANS_DATE',value:''},{key:'USER_ID',value:''},
                 {key:'TRANS_YEAR',value:''},{key:'startdate',value:''},
                 {key:'enddate',value:''},{key:'sub1_data0',value:''},
                 {key:'sub1_data1',value:''},{key:'sub2_data0',value:''},{key:'sub2_data1',value:''}];
-        })
-
-        function buildParam(){
             $('.form-control').each(function (i) {
                 obj[i].value=$(this).val();
             })
+            $('#parameters').val(JSON.stringify(obj));
+            $('#esgenForm').submit();
         }
 
 
@@ -93,7 +94,7 @@
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <form:form id="esgenForm" modelAttribute="report">
+                    <form:form id="esgenForm" modelAttribute="report" action="/generateReport" method="post">
                         <table>
                             <tr>
                                 <td><form:label path="reportId">Report ID:</form:label></td>
@@ -171,11 +172,13 @@
                                            aria-describedby="inputGroup-sizing-sm"/></td>
                             </tr>
                         </table>
+                        <form:hidden path="parameters" id="parameters"></form:hidden>
                     </form:form>
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="buildParam()">Close</button>
+                    <button type="button" class="btn btn-default" onclick="buildParam()">Generate</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
 
             </div>
