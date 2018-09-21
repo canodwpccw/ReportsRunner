@@ -6,6 +6,7 @@ import hk.com.Reports.eServices.model.Report;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import hk.com.Reports.eServices.model.ESGEN008;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class TestController {
@@ -50,5 +55,12 @@ public class TestController {
         Map<String, Object> parameters = prepareParameters(report.getParameters());
     }
 
+    @RequestMapping(value = "/index",method = RequestMethod.GET)
+    public ModelAndView indexGet(){
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("esgen");
+        mav.addObject("esgen",new ESGEN008());
+        return mav;
+    }
 
 }
