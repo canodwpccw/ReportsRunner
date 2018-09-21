@@ -28,7 +28,8 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
     public Report saveOrUpdate(Report report) {
-        return reportDao.saveOrUpdate(report);
+//        return reportDao.saveOrUpdate(report);
+        return null;
     }
 
 }

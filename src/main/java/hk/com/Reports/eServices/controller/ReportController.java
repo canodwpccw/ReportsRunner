@@ -1,6 +1,7 @@
 package hk.com.Reports.eServices.controller;
 
 import hk.com.Reports.eServices.model.Report;
+import hk.com.Reports.eServices.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,7 @@ import java.util.Properties;
 @Controller
 public class ReportController {
     @Autowired
-    private Environment env;
+    private ReportService reportService;
 
     @RequestMapping(value = "/addReport", method = RequestMethod.GET)
     public ModelAndView addReportGet() {
@@ -45,11 +46,7 @@ public class ReportController {
     public ModelAndView addReportPost(@ModelAttribute("report") Report report) throws IOException {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("addOrEditReport");
-        for(MultipartFile mf :report.getMultipartFiles()){
-            File reportDir = new File(env.getProperty("report.location") + report.getReportId());
-            if(!reportDir.exists())reportDir.mkdirs();
-            mf.transferTo(new File(reportDir.getAbsolutePath()+"//"+report.getReportId() + "." +mf.getOriginalFilename().split("\\.")[1]));
-        }
+        reportService.uploadJasperFiles(report);
         return mav;
     }
 
