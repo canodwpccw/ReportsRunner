@@ -19,5 +19,4 @@ public class ESGEN008 {
     private String sub2Data0;
     private String sub2Data1;
 
-
 }
