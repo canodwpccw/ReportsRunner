@@ -54,6 +54,9 @@
         #datepicker > span:hover {
             cursor: pointer;
         }
+        td{
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
@@ -88,7 +91,7 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Modal Heading</h4>
+                    <h4 class="modal-title">ESGEN008 MANUAL RUN</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
@@ -99,7 +102,7 @@
                             <tr>
                                 <td><form:label path="reportId">Report ID:</form:label></td>
                                 <td><form:input path="reportId" type="text" class="form-control" aria-label="Small"
-                                                aria-describedby="inputGroup-sizing-sm"/></td>
+                                                aria-describedby="inputGroup-sizing-sm" value="ESGEN008"/></td>
                             </tr>
                             <tr>
                                 <td><form:label path="reportId">Location:</form:label></td>
