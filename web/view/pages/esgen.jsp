@@ -27,16 +27,18 @@
         })
 
         function buildParam(){
-            var  obj = [{key:'REPORT_ID',value:''},{key:'LOCATION',value:''},
-                {key:'TRANS_DATE',value:''},{key:'USER_ID',value:''},
-                {key:'TRANS_YEAR',value:''},{key:'startdate',value:''},
-                {key:'enddate',value:''},{key:'sub1_data0',value:''},
-                {key:'sub1_data1',value:''},{key:'sub2_data0',value:''},{key:'sub2_data1',value:''}];
+            var  obj = ["{'REPORT_ID'","'LOCATION'","'TRANS_DATE'","'USER_ID'","'TRANS_YEAR'","'startdate'",
+                "'enddate'","'sub1_data0'","'sub1_data1'","'sub2_data0'","'sub2_data1'"];
             $('.form-control').each(function (i) {
-                obj[i].value=$(this).val();
+                obj[i]+=":'"+$(this).val()+"'";
             })
-            $('#parameters').val(JSON.stringify(obj));
+            // alert(obj+"}")
+            $('#parameters').val(obj+"}");
             $('#esgenForm').submit();
+
+
+
+
         }
 
 
@@ -91,13 +93,13 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">ESGEN008 MANUAL RUN</h4>
+                    <h2 class="modal-title">MANUAL RUN</h2>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <form:form id="esgenForm" modelAttribute="report" action="/generateReport" method="post">
+                    <form:form id="esgenForm" modelAttribute="report" action="${pageContext.request.contextPath}/generateReport" method="post">
                         <table>
                             <tr>
                                 <td><form:label path="reportId">Report ID:</form:label></td>
@@ -122,7 +124,7 @@
                             <tr>
                                 <td><form:label path="reportId">User ID:</form:label></td>
                                 <td><input type="text" class="form-control" aria-label="Small"
-                                                aria-describedby="inputGroup-sizing-sm"/></td>
+                                                aria-describedby="inputGroup-sizing-sm" value="UID-1234"/></td>
                             </tr>
                             <tr>
                                 <td><form:label path="reportId">Transaction Year:</form:label></td>
@@ -157,22 +159,22 @@
                             <tr>
                                 <td><form:label path="reportId">SubReport 1 Data 0:</form:label></td>
                                 <td><input type="text" class="form-control" aria-label="Small"
-                                           aria-describedby="inputGroup-sizing-sm"/></td>
+                                           aria-describedby="inputGroup-sizing-sm" value="HKS"/></td>
                             </tr>
                             <tr>
                                 <td><form:label path="reportId">SubReport 1 Data 1:</form:label></td>
                                 <td><input type="text" class="form-control" aria-label="Small"
-                                           aria-describedby="inputGroup-sizing-sm"/></td>
+                                           aria-describedby="inputGroup-sizing-sm" value="TD-EKO"/></td>
                             </tr>
                             <tr>
                                 <td><form:label path="reportId">SubReport 2 Data 0:</form:label></td>
                                 <td><input type="text" class="form-control" aria-label="Small"
-                                           aria-describedby="inputGroup-sizing-sm"/></td>
+                                           aria-describedby="inputGroup-sizing-sm" value="EKS"/></td>
                             </tr>
                             <tr>
                                 <td><form:label path="reportId">SubReport 2 Data 1:</form:label></td>
                                 <td><input type="text" class="form-control" aria-label="Small"
-                                           aria-describedby="inputGroup-sizing-sm"/></td>
+                                           aria-describedby="inputGroup-sizing-sm" value="A"/></td>
                             </tr>
                         </table>
                         <form:hidden path="parameters" id="parameters"></form:hidden>
