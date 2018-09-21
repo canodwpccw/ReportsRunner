@@ -34,7 +34,6 @@ public class TestController {
         return mav;
     }
 
-
     private Connection getDBConnection() throws SQLException {
         return sessionFactory.
                 getSessionFactoryOptions().getServiceRegistry().
