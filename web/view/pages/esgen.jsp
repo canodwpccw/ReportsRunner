@@ -27,14 +27,18 @@
         })
 
         function buildParam(){
-            var  obj = ['{"REPORT_ID"','{"LOCATION"','{"TRANS_DATE"','{"USER_ID"','{"TRANS_YEAR"','{"startdate"',
-                '{"enddate"','{"sub1_data0"','{"sub1_data1"','{"sub2_data0"','{"sub2_data1"'];
+            var  obj = ["{'REPORT_ID'","'LOCATION'","'TRANS_DATE'","'USER_ID'","'TRANS_YEAR'","'startdate'",
+                "'enddate'","'sub1_data0'","'sub1_data1'","'sub2_data0'","'sub2_data1'"];
             $('.form-control').each(function (i) {
-                obj[i]+=':"'+$(this).val()+'"}';
+                obj[i]+=":'"+$(this).val()+"'";
             })
-            // alert("["+obj+"]")
-            $('#parameters').val(JSON.stringify(obj));
+            // alert(obj+"}")
+            $('#parameters').val(obj+"}");
             $('#esgenForm').submit();
+
+
+
+
         }
 
 
