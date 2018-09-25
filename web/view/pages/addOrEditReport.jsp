@@ -12,17 +12,16 @@
 <head>
     <script src="${pageContext.request.contextPath}/webjars/jquery/3.1.1/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
-
     <script>
         function addRow() {
             var rowCount = $('#paramTable>tbody:last>tr').length;
             var trString = " " +
                 "<tr>" +
                     "<td>" +
-                        "<input type=\"text\" id=\"keyInput-" + rowCount + "\" class=\"keyinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>\n" +
+                        "<input type=\"text\" id=\"keyInput-" + rowCount + "\" class=\"keyinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>" +
                     "</td>" +
                     "<td>" +
-                        "<input type=\"text\" id=\"valueInput-" + rowCount + "\" class=\"valueinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>\n" +
+                        "<input type=\"text\" id=\"valueInput-" + rowCount + "\" class=\"valueinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>" +
                     "</td>" +
                 "</tr>";
             $("#paramTable>tbody:last").append(trString);
@@ -30,15 +29,19 @@
 
         function submitForm() {
             var params = [];
-            var parameter = "[";
+            var parameter = "{";
             $(".keyinput").each(function (i, row) {
                 var key = $("#keyInput-" + i).val();
                 var value = $("#valueInput-" + i).val();
-                params[i]="{'key':'"+key+"','value':'"+value+"'}";
+                params[i]=key+"="+value;
             });
-            parameter+=params+"]";
+            parameter+=params+"}";
             $("#parameters").val(parameter);
             $("#reportForm").submit();
+        }
+
+        function clearForm(){
+            $("#reportForm input[type=text]").val('');
         }
     </script>
     <link rel="stylesheet"
