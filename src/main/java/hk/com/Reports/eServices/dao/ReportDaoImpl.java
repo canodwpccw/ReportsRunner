@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class ReportDaoImpl extends GenericDaoImpl<Report, String> implements ReportDao{
+public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements ReportDao{
 
 
     @Autowired

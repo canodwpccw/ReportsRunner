@@ -4,7 +4,8 @@ import hk.com.Reports.eServices.model.Report;
 
 import java.util.List;
 
-public interface ReportDao extends GenericDao <Report, String > {
+public interface ReportDao extends GenericDao <Report, Integer> {
+    public Report saveOrUpdate(Report report);
     public List<Report> listAllReports();
     public Report getReport(int id);
     public List<Report> getAllReport();
