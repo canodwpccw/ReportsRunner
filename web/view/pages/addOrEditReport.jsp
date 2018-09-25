@@ -13,6 +13,13 @@
     <script src="${pageContext.request.contextPath}/webjars/jquery/3.1.1/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
     <script>
+        $(function(){
+            $('input[type="file"]').change(function(e){
+                var fileName = e.target.files[0].name;
+                var fileStr = fileName.split(".");
+                $("#reportId").val(fileStr[0]);
+            });
+        })
         function addRow() {
             var rowCount = $('#paramTable>tbody:last>tr').length;
             var trString = " " +
@@ -26,6 +33,10 @@
                 "</tr>";
             $("#paramTable>tbody:last").append(trString);
         }
+
+        // function getReportId(e){
+        //     alert(e.target.files[0].name)
+        // }
 
         function submitForm() {
             var params = [];
@@ -56,7 +67,7 @@
             <tr>
                 <td><form:label path="reportId">Report ID:</form:label></td>
                 <%--<td><form:input type="text" path="reportId"/></td>--%>
-                <td><form:input path="reportId" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm"/></td>
+                <td><form:input path="reportId" type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readonly="true"/></td>
             </tr>
             <tr>
                 <td><form:label path="multipartFiles">Template Location:</form:label></td>
