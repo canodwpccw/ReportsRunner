@@ -13,6 +13,7 @@ public class ReportJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
         reportService.testMethod();
     }
 
