@@ -47,7 +47,9 @@ public class ReportController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("addOrEditReport");
         System.out.println(report.toString());
+//        report.setId(5);
         report.setReportId("testReportID_12345");
+        System.out.println("########## \n\n\n" + report.toString());
         reportService.saveOrUpdate(report);
         return mav;
     }

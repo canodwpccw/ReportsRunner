@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 @Repository
+@Transactional
 public abstract class GenericDaoImpl<E, K extends Serializable> implements GenericDao<E, K> {
     @Autowired
     private SessionFactory sessionFactory;
@@ -36,8 +38,9 @@ public abstract class GenericDaoImpl<E, K extends Serializable> implements Gener
     }
 
     @Override
-    public void saveOrUpdate(E entity) {
-        currentSession().saveOrUpdate(entity);
+    public E saveOrUpdate(E entity) {
+        currentSession().save(entity);
+        return entity;
     }
 
     @Override
