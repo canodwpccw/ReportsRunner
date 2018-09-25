@@ -47,8 +47,8 @@ public class ReportController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("addOrEditReport");
         System.out.println(report.toString());
-
-//        reportService.uploadJasperFiles(report);
+        report.setReportId("testReportID_12345");
+        reportService.saveOrUpdate(report);
         return mav;
     }
 
