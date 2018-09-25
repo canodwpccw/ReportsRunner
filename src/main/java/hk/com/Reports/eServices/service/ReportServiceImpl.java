@@ -9,4 +9,14 @@ public class ReportServiceImpl implements ReportService{
     public void testMethod() {
         System.out.println("test method only!");
     }
+
+    @Override
+    public void uploadFiles() {
+
+    }
+
+    @Override
+    public void saveOrUpdate() {
+
+    }
 }
