@@ -18,10 +18,10 @@
             var trString = " " +
                 "<tr>" +
                     "<td>" +
-                        "<input type=\"text\" id=\"keyInput-" + rowCount + "\" class=\"keyinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>\n" +
+                        "<input type=\"text\" id=\"keyInput-" + rowCount + "\" class=\"keyinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>" +
                     "</td>" +
                     "<td>" +
-                        "<input type=\"text\" id=\"valueInput-" + rowCount + "\" class=\"valueinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>\n" +
+                        "<input type=\"text\" id=\"valueInput-" + rowCount + "\" class=\"valueinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>" +
                     "</td>" +
                 "</tr>";
             $("#paramTable>tbody:last").append(trString);
@@ -29,13 +29,15 @@
 
         function submitForm() {
             var params = [];
-            var parameter = "[";
+            var parameter = "{";
             $(".keyinput").each(function (i, row) {
                 var key = $("#keyInput-" + i).val();
                 var value = $("#valueInput-" + i).val();
-                params[i]="{'key':'"+key+"','value':'"+value+"'}";
+                params[i]=key+"="+value;
             });
-            parameter+=params+"]";
+            parameter+=params+"}";
+
+            alert(parameter);
             $("#parameters").val(parameter);
             $("#reportForm").submit();
         }
