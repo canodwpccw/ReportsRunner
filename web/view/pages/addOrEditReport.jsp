@@ -36,8 +36,6 @@
                 params[i]=key+"="+value;
             });
             parameter+=params+"}";
-
-            alert(parameter);
             $("#parameters").val(parameter);
             $("#reportForm").submit();
         }
