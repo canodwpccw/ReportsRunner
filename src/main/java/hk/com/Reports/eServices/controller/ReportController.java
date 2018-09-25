@@ -46,7 +46,9 @@ public class ReportController {
     public ModelAndView addReportPost(@ModelAttribute("report") Report report) throws IOException {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("addOrEditReport");
-//        reportService.uploadJasperFiles(report);
+        System.out.println(report.toString());
+        report.setReportId("testReportID_12345");
+        reportService.saveOrUpdate(report);
         return mav;
     }
 

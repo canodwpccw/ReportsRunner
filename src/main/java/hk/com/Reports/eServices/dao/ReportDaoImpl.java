@@ -51,6 +51,11 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, String> implements Rep
     }
 
     @Override
+    public List<Report> getDailyReport() {
+        return null;
+    }
+
+    @Override
     public Report addNewReport() {
         return null;
     }
