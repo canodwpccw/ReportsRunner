@@ -26,26 +26,27 @@
             var rowCount = $('#paramTable>tbody:last>tr').length;
             var trString = " " +
                 "<tr>" +
-                "<td>" +
+                "<td class='td-param'>" +
                 "<input type=\"text\" id=\"keyInput-" + rowCount + "\" class=\"keyinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>" +
                 "</td>" +
-                "<td>" +
+                "<td class='td-param'>" +
                 "<input type=\"text\" id=\"valueInput-" + rowCount + "\" class=\"valueinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>" +
                 "</td>" +
                 "</tr>";
             $("#paramTable>tbody:last").append(trString);
+            $("#paramHead").show();
         }
 
 
         function submitForm() {
             var params = [];
-            var parameter = "{";
+            var parameter ="";
             $(".keyinput").each(function (i, row) {
                 var key = $("#keyInput-" + i).val();
                 var value = $("#valueInput-" + i).val();
-                params[i] = key + "=" + value;
+                params[i] = "'" + key + "':'" + value + "'";
             });
-            parameter += params + "}";
+            parameter = ($(".keyinput").length===0)?"{}": "{" +params + "}";
             $("#parameters").val(parameter);
             $("#reportForm").submit();
         }
@@ -58,6 +59,14 @@
           href="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
     <title>Title</title>
 </head>
+<style>
+    .keyinput{
+        margin: 5px;
+    }
+    .td-param{
+        padding:5px;
+    }
+</style>
 <body>
 <div class="container-fluid">
     <form:form id="reportForm" method="post" action="${pageContext.request.contextPath}/${action}Report"
@@ -83,7 +92,7 @@
                 <td>
                     <table id="paramTable">
                         <tr>
-                            <thead>
+                            <thead id="paramHead" style="display:none">
                             <td>
                                 <form:label path="parameters">Field Name:</form:label>
                             </td>
@@ -92,24 +101,11 @@
                             </td>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>
-                                    <input type="text" id="keyInput-0" class="keyinput form-control" aria-label="Small"
-                                           aria-describedby="inputGroup-sizing-sm"/>
-                                </td>
-                                <td>
-                                    <input type="text" id="valueInput-0" class="valueinput form-control"
-                                           aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
-                                </td>
-                            </tr>
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="2">
-                                    <input type="button" class="btn btn-primary" onclick="addRow()"
-                                           value="Add Parameter"/>
-                                </td>
-
+                                <td colspan="1"></td>
+                                <td colspan="1"><input type="button" class="btn btn-primary" onclick="addRow()"value="Add Parameter" style="float:right"/></td>
                             </tr>
                             </tfoot>
                         </tr>
