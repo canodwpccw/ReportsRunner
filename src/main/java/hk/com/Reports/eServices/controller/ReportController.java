@@ -2,13 +2,12 @@ package hk.com.Reports.eServices.controller;
 
 import hk.com.Reports.eServices.model.Report;
 import hk.com.Reports.eServices.service.ReportService;
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.core.env.Environment;
@@ -17,6 +16,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Properties;
 
 @Controller
@@ -50,6 +51,13 @@ public class ReportController {
         return mav;
     }
 
+    @RequestMapping(value = "/generate/{id}",method = RequestMethod.GET, produces ="application/json")
+    @ResponseBody
+    public Report getReportById(@PathVariable("id") int id) throws ParseException, SQLException, JRException {
+        Report report =  reportService.getReportByID(id);
+        reportService.generatePDF(report,"DAILY");
+        return report;
+    }
 
 
     private File getFile(MultipartFile multipartFile) throws IOException {
