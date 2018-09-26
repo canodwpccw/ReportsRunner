@@ -58,17 +58,18 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
     public List<Report> getAllDailyReports() {
-        return null;
+
+        return reportDao.getDailyReport();
     }
 
     @Override
     public List<Report> getAllMonthlyReports() {
-        return null;
+        return reportDao.getMonthlyReport();
     }
 
     @Override
     public List<Report> getAllYearlyReports() {
-        return null;
+        return reportDao.getYearlyReport();
     }
 
     public boolean uploadJasperFiles(Report report) {
