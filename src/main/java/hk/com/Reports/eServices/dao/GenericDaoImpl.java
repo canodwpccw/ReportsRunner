@@ -1,5 +1,6 @@
 package hk.com.Reports.eServices.dao;
 
+import hk.com.Reports.eServices.model.Report;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,16 @@ public abstract class GenericDaoImpl<E, K extends Serializable> implements Gener
     }
 
     @Override
+    public E getByID(int key) {
+        return (E) currentSession().get(daoType, key);
+    }
+
+    @Override
+    public List<E> listAll() {
+        return currentSession().createCriteria(daoType).list();
+    }
+
+    @Override
     public void update(E entity) {
         currentSession().saveOrUpdate(entity);
     }
@@ -53,13 +64,6 @@ public abstract class GenericDaoImpl<E, K extends Serializable> implements Gener
         currentSession().delete(entity);
     }
 
-    @Override
-    public E find(K key) {
-        return (E) currentSession().get(daoType, key);
-    }
 
-    @Override
-    public List<E> getAll() {
-        return currentSession().createCriteria(daoType).list();
-    }
+
 }

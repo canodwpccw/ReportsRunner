@@ -17,37 +17,9 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements Re
 
 
     @Autowired
-    private SessionFactory   sessionFactory;
+    private SessionFactory sessionFactory;
 
     public ReportDaoImpl() {
-    }
-
-    @Override
-    public List<Report> listAllReports() {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria c = session.createCriteria(Report.class);
-        return c.list();
-    }
-
-    @Override
-    public Report getReport(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        Report report = (Report) session.get(Report.class, id);
-        return report;
-    }
-
-    @Override
-    public List<Report> getAllReport() {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria c = session.createCriteria(Report.class);
-        return c.list();
-    }
-
-    @Override
-    public Report getReportByID(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        Report report = (Report) session.get(Report.class, id);
-        return report;
     }
 
     @Override
@@ -55,14 +27,5 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements Re
         return null;
     }
 
-    @Override
-    public Report addNewReport() {
-        return null;
-    }
-
-    @Override
-    public Report editReport() {
-        return null;
-    }
 
 }
