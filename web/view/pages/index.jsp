@@ -9,6 +9,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
+<jsp:include page="commons/navbar.jsp"/>
 <head>
     <script src="${pageContext.request.contextPath}/webjars/jquery/3.1.1/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
