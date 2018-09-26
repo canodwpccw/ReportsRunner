@@ -1,10 +1,6 @@
 package hk.com.Reports.eServices.model;
 
-import com.sun.istack.internal.NotNull;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
-import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -17,10 +13,9 @@ import java.util.Date;
 public class Report {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @SequenceGenerator(name = "REPORTS_SEQ", sequenceName = "REPORTS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "REPORTS_SEQ", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
-    @NotNull
     private Integer id;
 
     @Column(name = "modifier")
@@ -44,75 +39,21 @@ public class Report {
     private String templateFilename;
 
     @Column(name = "isActive")
-    @Setter(AccessLevel.NONE)
     private Integer isActive;
 
     @Column(name = "isDaily")
-    @Setter(AccessLevel.NONE)
-    private Integer isDaily;
+    private Boolean isDaily;
 
     @Column(name = "isWeekly")
-    @Setter(AccessLevel.NONE)
-    private Integer isWeekly;
+    private Boolean isWeekly;
 
     @Column(name = "isMonthly")
-    @Setter(AccessLevel.NONE)
-    private Integer isMonthly;
+    private Boolean isMonthly;
 
     @Column(name = "isYearly")
-    @Setter(AccessLevel.NONE)
-    private Integer isYearly;
+    private Boolean isYearly;
 
-    @Transient
-    private Boolean isActiveBool;
-    @Transient
-    private Boolean isDailyBool;
-    @Transient
-    private Boolean isWeeklyBool;
-    @Transient
-    private Boolean isMonthlyBool;
-    @Transient
-    private Boolean isYearlyBool;
     @Transient
     private MultipartFile[] multipartFiles;
 
-    public Integer getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Integer isActive) {
-        this.isActive = isActive;
-    }
-
-    public Integer getIsDaily() {
-        return 1;
-    }
-
-    public void setIsDaily(Integer isDaily) {
-        this.isDaily = isDaily;
-    }
-
-    public Integer getIsWeekly() {
-        return 1;
-    }
-
-    public void setIsWeekly(Integer isWeekly) {
-        this.isWeekly = isWeekly;
-    }
-
-    public Integer getIsMonthly() {
-        return 1;
-    }
-
-    public void setIsMonthly(Integer isMonthly) {
-        this.isMonthly = isMonthly;
-    }
-
-    public Integer getIsYearly() {
-        return 1;
-    }
-
-    public void setIsYearly(Integer isYearly) {
-        this.isYearly = isYearly;
-    }
 }

@@ -59,7 +59,7 @@ public class AppConfig {
 //        sessionBuilder.addAnnotatedClasses(User.class, UserRole.class);
         sessionBuilder.scanPackages("hk.com.Reports.eServices.model");
         sessionBuilder.setProperty("hibernate.show_sql", "true");
-        sessionBuilder.setProperty("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
+        sessionBuilder.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
         return sessionBuilder.buildSessionFactory();
     }
 

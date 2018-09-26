@@ -23,13 +23,10 @@ public class ReportServiceImpl implements ReportService{
         System.out.println("test method only!");
     }
 
-
-
     @Override
     public Report saveOrUpdate(Report report) throws IOException {
         boolean isUploaded = uploadJasperFiles(report);
         return (isUploaded)? reportDao.saveOrUpdate(report):report;
-//        return null;
     }
 
     public boolean uploadJasperFiles(Report report) {

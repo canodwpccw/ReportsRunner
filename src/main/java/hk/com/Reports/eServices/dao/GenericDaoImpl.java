@@ -39,7 +39,7 @@ public abstract class GenericDaoImpl<E, K extends Serializable> implements Gener
 
     @Override
     public E saveOrUpdate(E entity) {
-        currentSession().save(entity);
+        currentSession().saveOrUpdate(entity);
         return entity;
     }
 
