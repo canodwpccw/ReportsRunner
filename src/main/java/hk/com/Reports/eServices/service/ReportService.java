@@ -8,6 +8,8 @@ import java.util.List;
 public interface ReportService {
     public void testMethod();
     public Report saveOrUpdate(Report report) throws IOException;
+    public Report getReportByID(int id);
+    public List<Report> getAllReport();
     public List<Report> getAllDailyReports();
     public List<Report> getAllMonthlyReports();
     public List<Report> getAllYearlyReports();

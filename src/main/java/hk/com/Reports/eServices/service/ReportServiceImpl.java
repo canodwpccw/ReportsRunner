@@ -2,9 +2,13 @@ package hk.com.Reports.eServices.service;
 
 import hk.com.Reports.eServices.dao.ReportDao;
 import hk.com.Reports.eServices.model.Report;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -19,6 +23,11 @@ public class ReportServiceImpl implements ReportService{
     private Environment env;
     @Autowired
     private ReportDao reportDao;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    @Transactional
 
     @Override
     public void testMethod() {
@@ -35,6 +44,16 @@ public class ReportServiceImpl implements ReportService{
             report = reportDao.saveOrUpdate(report);
         }
         return report;
+    }
+
+    @Override
+    public Report getReportByID(int id) {
+        return reportDao.getByID(id);
+    }
+
+    @Override
+    public List<Report> getAllReport() {
+        return reportDao.listAll();
     }
 
     @Override
