@@ -1,10 +1,17 @@
 package hk.com.Reports.eServices.service;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import hk.com.Reports.eServices.dao.ReportDao;
 import hk.com.Reports.eServices.model.Report;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -13,8 +20,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 public class ReportServiceImpl implements ReportService{
@@ -23,9 +43,10 @@ public class ReportServiceImpl implements ReportService{
     private Environment env;
     @Autowired
     private ReportDao reportDao;
-
     @Autowired
     private SessionFactory sessionFactory;
+    private final DateTimeFormatter JASPER_STRING_DATE_FORMAT_PARAM = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private final LocalDate TODAY = LocalDate.now();
 
     @Transactional
 
@@ -72,7 +93,12 @@ public class ReportServiceImpl implements ReportService{
         return reportDao.getYearlyReport();
     }
 
-    public boolean uploadJasperFiles(Report report) {
+    @Override
+    public void generatePDF(Report report,String frequency) throws ParseException, SQLException, JRException {
+        generateReport(report,frequency);
+    }
+
+    private boolean uploadJasperFiles(Report report) {
         boolean isUploaded = false;
         for(MultipartFile mf :report.getMultipartFiles()){
             File reportDir = new File(env.getProperty("report.location") + report.getReportId());
@@ -86,6 +112,49 @@ public class ReportServiceImpl implements ReportService{
             }
         }
         return isUploaded;
+    }
+    private Map<String, Object> prepareParameters(String parameters,String frequency) throws ParseException {
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, String>>(){}.getType();
+        Map<String, Object> jasperParam = (Map)gson.fromJson(parameters, type);
+        String startdate ="";
+        String enddate ="";
+        switch(frequency) {
+            case "DAILY":
+                startdate = enddate =  JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.minus(1, DAYS) );
+                break;
+            case "MONTHLY" :
+                startdate = JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.withDayOfMonth(1));
+                enddate = JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.lastDayOfMonth()));
+                break;
+            case "YEARLY" :
+                startdate = JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.firstDayOfYear()));
+                enddate = JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.lastDayOfYear()));
+                break;
+            default :
+                startdate = enddate = JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.minus(1, DAYS));
+        }
+        jasperParam.put("startdate", startdate);
+        jasperParam.put("enddate", enddate);
+
+        jasperParam.put("TRANS_DATE",new java.sql.Date(new java.util.Date().getTime()));
+        jasperParam.put("TRANS_YEAR",new java.sql.Date(new java.util.Date().getTime()));
+        jasperParam.put("PRINT_DATE",new java.sql.Date(new java.util.Date().getTime()));
+        jasperParam.put("PRINT_TIME",new java.sql.Date(new java.util.Date().getTime()));
+        return jasperParam;
+    }
+    private void generateReport(Report report,String frequency) throws SQLException, JRException, ParseException {
+        Map<String, Object> parameters = prepareParameters(report.getParameters(),frequency);
+        final String ROOT_FOLDER = env.getProperty("report.location") + report.getReportId() + "\\";
+        final String TEMPLATE = report.getReportId() + ".jasper";
+        final String PDF = JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.minus(1, DAYS)) + "-" + report.getReportId() + ".pdf";
+        JasperPrint jasperPrint = JasperFillManager.fillReport(ROOT_FOLDER + TEMPLATE, parameters, getDBConnection());
+        JasperExportManager.exportReportToPdfFile(jasperPrint, ROOT_FOLDER + PDF);
+    }
+    private Connection getDBConnection() throws SQLException {
+        return sessionFactory.
+                getSessionFactoryOptions().getServiceRegistry().
+                getService(ConnectionProvider.class).getConnection();
     }
 
 }
