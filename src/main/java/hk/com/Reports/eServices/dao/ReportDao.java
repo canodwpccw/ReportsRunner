@@ -9,5 +9,6 @@ public interface ReportDao extends GenericDao <Report, Integer> {
     public List<Report> listAll();
     public Report getByID(int id);
     public List<Report> getDailyReport();
-
+    public List<Report> getMonthlyReport();
+    public List<Report> getYearlyReport();
 }

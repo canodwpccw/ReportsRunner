@@ -35,4 +35,18 @@ public class IndexController {
         return reportService.getReportByID(id);
     }
 
+
+
+    @RequestMapping(value = "/getAllDailyReport",method = RequestMethod.GET, produces ="application/json")
+    @ResponseBody
+    public List<Report> getAllDailyReport(){{ return reportService.getAllDailyReports(); } }
+
+    @RequestMapping(value = "/getAllMonthlyReport",method = RequestMethod.GET, produces ="application/json")
+    @ResponseBody
+    public List<Report> getAllMonthlyReport(){{ return reportService.getAllMonthlyReports(); } }
+
+    @RequestMapping(value = "/getAllYearlyReport",method = RequestMethod.GET, produces ="application/json")
+    @ResponseBody
+    public List<Report> getAllYearlyReport(){{ return reportService.getAllYearlyReports(); } }
+
 }
