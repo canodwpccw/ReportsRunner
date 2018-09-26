@@ -39,7 +39,7 @@ public class Report {
     private String templateFilename;
 
     @Column(name = "isActive")
-    private Integer isActive;
+    private Boolean isActive;
 
     @Column(name = "isDaily")
     private Boolean isDaily;
