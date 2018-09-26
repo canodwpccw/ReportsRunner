@@ -119,11 +119,10 @@
             <tr>
                 <td><form:label path="isDaily">Schedule</form:label></td>
                 <td>
-
-                    <form:checkbox path="isDailyBool"/><form:label path="isDailyBool">Daily</form:label>
-                    <form:checkbox path="isWeeklyBool"/><form:label path="isWeeklyBool">Weekly</form:label>
-                    <form:checkbox path="isMonthlyBool"/><form:label path="isMonthlyBool">Monthly</form:label>
-                    <form:checkbox path="isYearlyBool"/><form:label path="isYearlyBool">Is Yearly</form:label>
+                <form:checkbox path="isDaily"/><form:label path="isDaily">Daily</form:label>
+                <form:checkbox path="isWeekly"/><form:label path="isWeekly">Weekly</form:label>
+                <form:checkbox path="isMonthly"/><form:label path="isMonthly">Monthly</form:label>
+                <form:checkbox path="isYearly"/><form:label path="isYearly">Is Yearly</form:label>
                 </td>
             </tr>
             <tr>

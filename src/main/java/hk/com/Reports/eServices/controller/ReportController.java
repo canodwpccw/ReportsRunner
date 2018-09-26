@@ -46,10 +46,7 @@ public class ReportController {
     public ModelAndView addReportPost(@ModelAttribute("report") Report report) throws IOException {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("addOrEditReport");
-        System.out.println(report.toString());
-//        report.setId(5);
-        report.setReportId("testReportID_12345");
-        System.out.println("########## \n\n\n" + report.toString());
+        System.out.println("########## \n\n\n" + report.toString() + "########## \n\n\n");
         reportService.saveOrUpdate(report);
         return mav;
     }
