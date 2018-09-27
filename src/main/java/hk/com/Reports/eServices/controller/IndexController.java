@@ -3,12 +3,15 @@ package hk.com.Reports.eServices.controller;
 import hk.com.Reports.eServices.model.Report;
 import hk.com.Reports.eServices.dao.ReportDao;
 import hk.com.Reports.eServices.service.ReportService;
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 
 @Controller
@@ -39,14 +42,39 @@ public class IndexController {
 
     @RequestMapping(value = "/getAllDailyReport",method = RequestMethod.GET, produces ="application/json")
     @ResponseBody
-    public List<Report> getAllDailyReport(){{ return reportService.getAllDailyReports(); } }
+    public List<Report> getAllDailyReport(){ return reportService.getAllDailyReports(); }
 
     @RequestMapping(value = "/getAllMonthlyReport",method = RequestMethod.GET, produces ="application/json")
     @ResponseBody
-    public List<Report> getAllMonthlyReport(){{ return reportService.getAllMonthlyReports(); } }
+    public List<Report> getAllMonthlyReport(){ return reportService.getAllMonthlyReports(); }
 
     @RequestMapping(value = "/getAllYearlyReport",method = RequestMethod.GET, produces ="application/json")
     @ResponseBody
-    public List<Report> getAllYearlyReport(){{ return reportService.getAllYearlyReports(); } }
+    public List<Report> getAllYearlyReport(){ return reportService.getAllYearlyReports(); }
+
+    @RequestMapping(value = "/generateDailyReports",method = RequestMethod.GET, produces ="application/json")
+    @ResponseBody
+    public List<Report> generateDailyReports() {
+        List<Report> dailyReports = reportService.getAllDailyReports();
+        for(Report report:dailyReports){
+            System.out.println("Generating " + report.getReportId() + "...");
+            try {
+                reportService.generatePDF(report,"DAILY");
+                System.out.println( "SUCESS!" );
+            } catch (ParseException e) {
+                System.out.println( "FAILED!" );
+                e.printStackTrace();
+            } catch (SQLException e) {
+                System.out.println( "FAILED!" );
+                e.printStackTrace();
+            } catch (JRException e) {
+                System.out.println( "FAILED!" );
+                e.printStackTrace();
+            }finally {
+                continue;
+            }
+        }
+        return dailyReports;
+    }
 
 }

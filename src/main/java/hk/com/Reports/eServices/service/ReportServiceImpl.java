@@ -27,6 +27,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
@@ -46,7 +47,8 @@ public class ReportServiceImpl implements ReportService{
     @Autowired
     private SessionFactory sessionFactory;
     private final DateTimeFormatter JASPER_STRING_DATE_FORMAT_PARAM = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private final LocalDate TODAY = LocalDate.now();
+    private final DateTimeFormatter STRING_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd.HHmmss");
+    private final LocalDateTime TODAY = LocalDateTime.now();
 
     @Transactional
 
@@ -113,7 +115,7 @@ public class ReportServiceImpl implements ReportService{
         }
         return isUploaded;
     }
-    private Map<String, Object> prepareParameters(String parameters,String frequency) throws ParseException {
+    private Map<String, Object> prepareParameters(String parameters,String frequency) {
         Gson gson = new Gson();
         Type type = new TypeToken<Map<String, String>>(){}.getType();
         Map<String, Object> jasperParam = (Map)gson.fromJson(parameters, type);
@@ -141,13 +143,14 @@ public class ReportServiceImpl implements ReportService{
         jasperParam.put("TRANS_YEAR",new java.sql.Date(new java.util.Date().getTime()));
         jasperParam.put("PRINT_DATE",new java.sql.Date(new java.util.Date().getTime()));
         jasperParam.put("PRINT_TIME",new java.sql.Date(new java.util.Date().getTime()));
+        System.out.println("PARAMETERS:\n" + jasperParam.toString());
         return jasperParam;
     }
     private void generateReport(Report report,String frequency) throws SQLException, JRException, ParseException {
         Map<String, Object> parameters = prepareParameters(report.getParameters(),frequency);
         final String ROOT_FOLDER = env.getProperty("report.location") + report.getReportId() + "\\";
         final String TEMPLATE = report.getReportId() + ".jasper";
-        final String PDF = JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.minus(1, DAYS)) + "-" + report.getReportId() + ".pdf";
+        final String PDF = STRING_DATETIME_FORMAT.format(TODAY.minus(1, DAYS)) + "_" + report.getReportId() + ".pdf";
         JasperPrint jasperPrint = JasperFillManager.fillReport(ROOT_FOLDER + TEMPLATE, parameters, getDBConnection());
         JasperExportManager.exportReportToPdfFile(jasperPrint, ROOT_FOLDER + PDF);
     }
