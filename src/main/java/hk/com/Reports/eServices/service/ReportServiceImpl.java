@@ -100,6 +100,11 @@ public class ReportServiceImpl implements ReportService{
         generateReport(report,frequency);
     }
 
+    @Override
+    public List<Report> deleteByID(int id) {
+        return reportDao.deleteByID(id);
+    }
+
     private boolean uploadJasperFiles(Report report) {
         boolean isUploaded = false;
         for(MultipartFile mf :report.getMultipartFiles()){

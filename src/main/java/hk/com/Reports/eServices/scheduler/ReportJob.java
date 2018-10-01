@@ -22,7 +22,7 @@ public class ReportJob {
     @Autowired
     ReportService reportService;
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "* * 1 * * *")
     public void runTestDaily(){
         List<Report> dailyReports = reportService.getAllDailyReports();
         for(Report report:dailyReports){
