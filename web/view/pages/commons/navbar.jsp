@@ -8,14 +8,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<head>
-    <script src="${pageContext.request.contextPath}/webjars/jquery/3.1.1/jquery.min.js"></script>
-    <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/webjars/bootstrap-datepicker/1.3.0/css/datepicker.css"/>
-    <title>Title</title>
     <script>
         $('li > a').click(function() {
             $('li').removeClass();
@@ -29,9 +21,6 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="#">Reports Runner</a>
         </div>
-
-
-
         <ul class="nav navbar-nav">
             <li class="active"><a href="${pageContext.request.contextPath}/">Reports</a></li>
             <li><a href="${pageContext.request.contextPath}/addReport">Add Report</a></li>

@@ -26,7 +26,7 @@ public class IndexController {
     @RequestMapping(value = "/",method = RequestMethod.GET)
     public ModelAndView index(Model m){
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("index");
+        mav.setViewName("index2");
         List<Report> reports =  reportService.getAllReport();
         mav.addObject("reports", reports);
         return mav;

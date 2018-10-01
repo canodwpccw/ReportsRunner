@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: 81101610
-  Date: 13/09/2018
-  Time: 8:41 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -12,9 +5,9 @@
 <jsp:include page="commons/navbar.jsp"/>
 <head>
     <script src="${pageContext.request.contextPath}/webjars/jquery/3.1.1/jquery.min.js"></script>
-    <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/webjars/bootstrap/4.0.0-beta/js/bootstrap.js"></script>
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
+          href="${pageContext.request.contextPath}/webjars/bootstrap/4.0.0-beta/css/bootstrap-grid.min.css"/>
     <title>Title</title>
     <script>
         $(document).ready(function () {
