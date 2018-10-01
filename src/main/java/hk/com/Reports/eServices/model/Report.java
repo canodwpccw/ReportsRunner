@@ -2,7 +2,6 @@ package hk.com.Reports.eServices.model;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -31,6 +30,15 @@ public class Report {
 
     @Column(name = "reportId")
     private String reportId;
+
+    @Column(name = "reportTitle")
+    private String reportTitle;
+
+    @Column(name = "templateType")
+    private String templateType;
+
+    @Column(name = "module")
+    private String module;
 
     @Column(name = "parameters")
     private String parameters;
