@@ -17,4 +17,5 @@ public interface ReportService {
     public List<Report> getAllMonthlyReports();
     public List<Report> getAllYearlyReports();
     public void generatePDF(Report report,String frequency) throws ParseException, SQLException, JRException;
+    public List<Report> deleteByID(int id);
 }

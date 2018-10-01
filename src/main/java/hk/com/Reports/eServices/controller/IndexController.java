@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.ws.rs.QueryParam;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
@@ -51,6 +52,12 @@ public class IndexController {
     @RequestMapping(value = "/getAllYearlyReport",method = RequestMethod.GET, produces ="application/json")
     @ResponseBody
     public List<Report> getAllYearlyReport(){ return reportService.getAllYearlyReports(); }
+
+    @RequestMapping(value = "/deleteByID", method = RequestMethod.POST, produces ="application/json")
+    @ResponseBody
+    public List<Report> deleteByID(@QueryParam("id") int id) {
+        return reportService.deleteByID(id);
+    }
 
     @RequestMapping(value = "/generateDailyReports",method = RequestMethod.GET, produces ="application/json")
     @ResponseBody

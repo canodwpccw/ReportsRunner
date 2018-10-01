@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
@@ -44,6 +47,19 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements Re
         Session session = sessionFactory.getCurrentSession();
         Criteria c = session.createCriteria(Report.class);
         c.add(Restrictions.eq("isYearly",true));
+        return c.list();
+    }
+
+    @Override
+    public List<Report> deleteByID(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria c = session.createCriteria(Report.class);
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaUpdate<Report> criteria = builder.createCriteriaUpdate(Report.class);
+        Root<Report> root = criteria.from(Report.class);
+        criteria.set(root.get("isActive"), 0);
+        criteria.where(builder.equal(root.get("id"), id));
+        session.createQuery(criteria).executeUpdate();
         return c.list();
     }
 
