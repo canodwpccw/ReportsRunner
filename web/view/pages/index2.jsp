@@ -17,7 +17,10 @@
 
 <script>
     $(document).ready(function() {
-        $('#example').DataTable();
+        $('#example').dataTable({
+            info: false,
+            paging: false
+        });
     } );
 </script>
 <style>
@@ -26,6 +29,32 @@
     }
     table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
         background-color: #efc8a6;
+    }
+
+    element.style {
+    }
+    .btn:not(:disabled):not(.disabled) {
+        cursor: pointer;
+    }
+    [type=reset], [type=submit], button, html [type=button] {
+        -webkit-appearance: button;
+    }
+    .btn {
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        border: 1px solid transparent;
+        padding: 4px 8px;
+        font-size: 12px;
+        line-height: 1.5;
+        border-radius: .25rem;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 </style>
 <body>
@@ -40,11 +69,12 @@
                     <th bgcolor="#ffaf45">ReportID</th>
                     <th bgcolor="#ffaf45">Module</th>
                     <th bgcolor="#ffaf45">Report Title</th>
+                    <th bgcolor="#ffaf45">Frequency</th>
                     <th bgcolor="#ffaf45">Template</th>
                     <th bgcolor="#ffaf45">Last Run</th>
                     <th bgcolor="#ffaf45">Next Run</th>
                     <th bgcolor="#ffaf45">Last Result</th>
-                    <th bgcolor="#ffaf45">Run</th>
+                    <th bgcolor="#ffaf45">Manual Run</th>
                     <th bgcolor="#ffaf45">Activate</th>
                 </tr>
                 </thead>
@@ -54,14 +84,13 @@
                         <td>${report.reportId}</td>
                         <td>${report.module}</td>
                         <td>${report.reportTitle}</td>
+                        <td>${report.frequency}</td>
                         <td>${report.templateType}</td>
                         <td>01-Oct-2018</td>
                         <td>01-Oct-2018</td>
                         <td>Report was created.</td>
                         <td>
-                            <button type="button" id="btnOpen" class="btn btn-primary">
-                                Generate
-                            </button>
+                            <button type="button" class="btn btn-secondary">Generate</button>
                         </td>
                         <td>${report.isActive}</td>
                     </tr>
@@ -72,11 +101,12 @@
                     <th bgcolor="#ffaf45">ReportID</th>
                     <th bgcolor="#ffaf45">Module</th>
                     <th bgcolor="#ffaf45">Report Title</th>
+                    <th bgcolor="#ffaf45">Frequency</th>
                     <th bgcolor="#ffaf45">Template</th>
                     <th bgcolor="#ffaf45">Last Run</th>
                     <th bgcolor="#ffaf45">Next Run</th>
                     <th bgcolor="#ffaf45">Last Result</th>
-                    <th bgcolor="#ffaf45">Run</th>
+                    <th bgcolor="#ffaf45">Manual Run</th>
                     <th bgcolor="#ffaf45">Activate</th>
                 </tr>
                 </tfoot>

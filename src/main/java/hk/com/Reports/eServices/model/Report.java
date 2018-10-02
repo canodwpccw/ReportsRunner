@@ -28,6 +28,9 @@ public class Report {
     @Column(name = "timestamp")
     private Date timestamp;
 
+    @Column(name = "isActive")
+    private Boolean isActive;
+
     @Column(name = "reportId")
     private String reportId;
 
@@ -40,26 +43,23 @@ public class Report {
     @Column(name = "module")
     private String module;
 
+    @Column(name = "frequency")
+    private String frequency;
+
     @Column(name = "parameters")
     private String parameters;
 
     @Column(name = "templateFilename")
     private String templateFilename;
 
-    @Column(name = "isActive")
-    private Boolean isActive;
+    @Column(name = "dBSource")
+    private String dBSource;
 
-    @Column(name = "isDaily")
-    private Boolean isDaily;
+    @Column(name = "preStoredProc")
+    private String preStoredProc;
 
-    @Column(name = "isWeekly")
-    private Boolean isWeekly;
-
-    @Column(name = "isMonthly")
-    private Boolean isMonthly;
-
-    @Column(name = "isYearly")
-    private Boolean isYearly;
+    @Column(name = "postStoredProc")
+    private String postStoredProc;
 
     @Transient
     private MultipartFile[] multipartFiles;

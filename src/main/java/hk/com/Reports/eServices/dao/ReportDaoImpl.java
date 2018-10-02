@@ -28,7 +28,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements Re
     public List<Report> getDailyReport() {
         Session session = sessionFactory.getCurrentSession();
         Criteria c = session.createCriteria(Report.class);
-        c.add(Restrictions.eq("isDaily",true));
+        c.add(Restrictions.eq("frequency","daily"));
         return c.list();
 
     }
@@ -37,7 +37,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements Re
     public List<Report> getMonthlyReport() {
         Session session = sessionFactory.getCurrentSession();
         Criteria c = session.createCriteria(Report.class);
-        c.add(Restrictions.eq("isMonthly",true));
+        c.add(Restrictions.eq("frequency","monthly"));
         return c.list();
 
     }
@@ -46,7 +46,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements Re
     public List<Report> getYearlyReport() {
         Session session = sessionFactory.getCurrentSession();
         Criteria c = session.createCriteria(Report.class);
-        c.add(Restrictions.eq("isYearly",true));
+        c.add(Restrictions.eq("frequency","yearly"));
         return c.list();
     }
 
