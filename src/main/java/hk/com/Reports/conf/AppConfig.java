@@ -51,6 +51,18 @@ public class AppConfig {
         return dataSource;
     }
 
+    @Bean(name = "crystalDataSource")
+    public DataSource crystalDataSource() {
+        BasicDataSource  dataSource
+                = new BasicDataSource();
+        dataSource.setDriverClassName(
+                env.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setUrl(env.getProperty("db.eService.crystal.host"));
+        dataSource.setUsername(env.getProperty("db.eService.crystal.username"));
+        dataSource.setPassword(env.getProperty("db.eService.crystal.password"));
+        return dataSource;
+    }
+
     @Autowired
     @Bean(name = "sessionFactory")
     public SessionFactory getSessionFactory() {

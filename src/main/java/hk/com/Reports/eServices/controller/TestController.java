@@ -1,5 +1,8 @@
 package hk.com.Reports.eServices.controller;
 
+import com.crystaldecisions.sdk.occa.report.application.ReportClientDocument;
+import com.crystaldecisions.sdk.occa.report.exportoptions.ReportExportFormat;
+import com.crystaldecisions.sdk.occa.report.lib.ReportSDKException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hk.com.Reports.eServices.model.Report;
@@ -11,15 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import hk.com.Reports.eServices.model.ESGEN008;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,10 +28,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+
+import javax.sql.DataSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.Date;
+
 
 @Controller
 public class TestController {
@@ -44,11 +53,13 @@ public class TestController {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private DataSource crystalDataSource;
 
-    @RequestMapping(value={"/generateReport"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+
+    @RequestMapping(value = {"/generateReport"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     public ModelAndView addReportPost(@ModelAttribute("report") Report report)
-            throws IOException, SQLException, JRException, ParseException
-    {
+            throws IOException, SQLException, JRException, ParseException {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("esgen");
 
@@ -69,16 +80,17 @@ public class TestController {
 
     private Map<String, Object> prepareParameters(String parameters) throws ParseException {
         Gson gson = new Gson();
-        Type type = new TypeToken<Map<String, String>>(){}.getType();
-        Map<String, Object> myMap = (Map)gson.fromJson(parameters, type);
+        Type type = new TypeToken<Map<String, String>>() {
+        }.getType();
+        Map<String, Object> myMap = (Map) gson.fromJson(parameters, type);
 
         myMap.remove("TRANS_DATE");
         myMap.remove("TRANS_YEAR");
         myMap.remove("PRINT_DATE");
         myMap.remove("PRINT_TIME");
 
-        String startdate = (String)myMap.get("startdate");
-        String enddate = (String)myMap.get("enddate");
+        String startdate = (String) myMap.get("startdate");
+        String enddate = (String) myMap.get("enddate");
 
         myMap.put("startdate", new String(convertDateToString(convertToDate(startdate))));
         myMap.put("enddate", new String(convertDateToString(convertToDate(enddate))));
@@ -95,7 +107,7 @@ public class TestController {
         JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\reports\\ESGEN008\\\\ESGEN008.pdf");
     }
 
-    @RequestMapping(value={"/index"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = {"/index"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     public ModelAndView indexGet() {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("esgen");
@@ -113,6 +125,51 @@ public class TestController {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         String strDate = dateFormat.format(date);
         return strDate;
+    }
+
+    @RequestMapping(value = "/testCrystal", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String generatePDFCrystalReport() {
+
+        try {
+            Connection connection = crystalDataSource.getConnection();
+            if (connection == null) {
+                System.out.println("ERROR!");
+            }
+            else{
+                System.out.println("SUCCESS!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String report_name = "C:\\Users\\81101651\\Downloads\\testcrystal\\demo_1.rpt";
+            String exportFileName = "C:\\Users\\81101651\\Downloads\\testcrystal\\demo_1.pdf";
+            ReportClientDocument clientDoc = new ReportClientDocument();
+            clientDoc.open(report_name, ReportExportFormat._PDF);
+            //Passing Parameter(p_name) to Crystal Report
+            clientDoc.getDataDefController().getParameterFieldController().setCurrentValue("", "p_name", "Welcome to Crystal Reports");
+            clientDoc.getDatabaseController();
+            //Writing into PDF file
+            ByteArrayInputStream bais = (ByteArrayInputStream) clientDoc.getPrintOutputController().export(ReportExportFormat.PDF);
+            int size = bais.available();
+            byte[] barray = new byte[size];
+            FileOutputStream fos = new FileOutputStream(new File(exportFileName));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(size);
+            int bytes = bais.read(barray, 0, size);
+            baos.write(barray, 0, bytes);
+            baos.writeTo(fos);
+            clientDoc.close();
+            bais.close();
+            baos.close();
+            fos.close();
+        } catch (ReportSDKException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "crystal";
     }
 
 }
