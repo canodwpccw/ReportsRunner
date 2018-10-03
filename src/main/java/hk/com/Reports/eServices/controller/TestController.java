@@ -3,6 +3,7 @@ package hk.com.Reports.eServices.controller;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hk.com.Reports.eServices.model.Report;
+import hk.com.Reports.eServices.service.ReportService;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.hibernate.SessionFactory;
@@ -47,6 +48,9 @@ public class TestController {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private ReportService reportService;
 
     @Autowired
     private DataSource dataSource;
@@ -124,7 +128,11 @@ public class TestController {
     @RequestMapping(value = "testCreatePDF",method = RequestMethod.GET, produces = "application/pdf")
     public void generateReport(String json, HttpServletRequest request, HttpServletResponse response){
         try {
-            JasperPrint jasperPrint = JasperFillManager.fillReport("C:\\reports\\ESGEN002\\ESGEN002.jasper",null,dataSource.getConnection());
+            Report report = reportService.getReportByID(2);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data0","HKS");
+            map.put("data1","HKS");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(env.getProperty("report.location")+"\\"+report.getReportId()+"\\"+report.getReportId()+"."+report.getTemplateType(),map,dataSource.getConnection());
             JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
         } catch (JRException e) {
             e.printStackTrace();
