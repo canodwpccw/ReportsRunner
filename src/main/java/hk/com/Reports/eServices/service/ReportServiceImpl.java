@@ -30,10 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -103,6 +100,18 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public List<Report> deleteByID(int id) {
         return reportDao.deleteByID(id);
+    }
+
+    @Override
+    public HashMap<String, String> getDatesInStrFmt() {
+        HashMap<String,String> datesInStr = new HashMap<>();
+        datesInStr.put("dailyStartdate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.minus(1, DAYS) ));
+        datesInStr.put("dailyEnddate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.minus(1, DAYS) ));
+        datesInStr.put("monthlyStartdate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.withDayOfMonth(1)));
+        datesInStr.put("monthlyEnddate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.lastDayOfMonth())));
+        datesInStr.put("yearlyStartdate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.firstDayOfYear())));
+        datesInStr.put("yearlyEnddate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.lastDayOfYear())));
+        return datesInStr;
     }
 
     private boolean uploadJasperFiles(Report report) {

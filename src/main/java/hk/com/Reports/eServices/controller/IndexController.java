@@ -30,6 +30,7 @@ public class IndexController {
         mav.setViewName("index2");
         List<Report> reports =  reportService.getAllReport();
         mav.addObject("reports", reports);
+        mav.addObject("datesInStr", reportService.getDatesInStrFmt());
         return mav;
     }
 
