@@ -34,6 +34,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+
 @Controller
 public class TestController {
 
@@ -44,6 +48,8 @@ public class TestController {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private DataSource dataSource;
 
     @RequestMapping(value={"/generateReport"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
     public ModelAndView addReportPost(@ModelAttribute("report") Report report)
@@ -113,6 +119,20 @@ public class TestController {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         String strDate = dateFormat.format(date);
         return strDate;
+    }
+
+    @RequestMapping(value = "testCreatePDF",method = RequestMethod.GET, produces = "application/pdf")
+    public void generateReport(String json, HttpServletRequest request, HttpServletResponse response){
+        try {
+            JasperPrint jasperPrint = JasperFillManager.fillReport("C:\\reports\\ESGEN002\\ESGEN002.jasper",null,dataSource.getConnection());
+            JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
