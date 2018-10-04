@@ -28,6 +28,10 @@ public class Report {
     @Column(name = "timestamp")
     private Date timestamp;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "lastRun")
+    private Date lastRun;
+
     @Column(name = "isActive")
     private Boolean isActive;
 
