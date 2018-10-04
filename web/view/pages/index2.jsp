@@ -1,6 +1,7 @@
 <%@ page import="com.google.gson.GsonBuilder" %>
 <%@ page import="com.google.gson.Gson" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -187,8 +188,8 @@
                     <td>${rep.reportTitle}</td>
                     <td>${rep.frequency}</td>
                     <td>${rep.templateType}</td>
-                    <td>01-Oct-2018</td>
-                    <td>01-Oct-2018</td>
+                    <td>${rep.lastRun}</td>
+                    <td>TODO</td>
                     <td>Report was created.</td>
                     <td>
                         <button type="button" class="btn btn-secondary"
