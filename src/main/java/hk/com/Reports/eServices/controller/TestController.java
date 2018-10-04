@@ -6,6 +6,7 @@ import com.crystaldecisions.sdk.occa.report.lib.ReportSDKException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hk.com.Reports.eServices.model.Report;
+import hk.com.Reports.eServices.service.ReportService;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import org.hibernate.SessionFactory;
@@ -51,11 +52,7 @@ public class TestController {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private Environment env;
-
-    @Autowired
-    private DataSource crystalDataSource;
-
+    private ReportService reportService;
 
     @RequestMapping(value = {"/generateReport"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     public ModelAndView addReportPost(@ModelAttribute("report") Report report)
@@ -129,47 +126,9 @@ public class TestController {
 
     @RequestMapping(value = "/testCrystal", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String generatePDFCrystalReport() {
-
-        try {
-            Connection connection = crystalDataSource.getConnection();
-            if (connection == null) {
-                System.out.println("ERROR!");
-            }
-            else{
-                System.out.println("SUCCESS!");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            String report_name = "C:\\Users\\81101651\\Downloads\\testcrystal\\demo_1.rpt";
-            String exportFileName = "C:\\Users\\81101651\\Downloads\\testcrystal\\demo_1.pdf";
-            ReportClientDocument clientDoc = new ReportClientDocument();
-            clientDoc.open(report_name, ReportExportFormat._PDF);
-            //Passing Parameter(p_name) to Crystal Report
-            clientDoc.getDataDefController().getParameterFieldController().setCurrentValue("", "p_name", "Welcome to Crystal Reports");
-            clientDoc.getDatabaseController();
-            //Writing into PDF file
-            ByteArrayInputStream bais = (ByteArrayInputStream) clientDoc.getPrintOutputController().export(ReportExportFormat.PDF);
-            int size = bais.available();
-            byte[] barray = new byte[size];
-            FileOutputStream fos = new FileOutputStream(new File(exportFileName));
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(size);
-            int bytes = bais.read(barray, 0, size);
-            baos.write(barray, 0, bytes);
-            baos.writeTo(fos);
-            clientDoc.close();
-            bais.close();
-            baos.close();
-            fos.close();
-        } catch (ReportSDKException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return "crystal";
+    public String testCrystal(){
+//        reportService.generatePDFCrystalReport();
+        return "asdasdasdasd";
     }
 
 }

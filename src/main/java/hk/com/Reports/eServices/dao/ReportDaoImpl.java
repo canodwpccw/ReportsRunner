@@ -29,6 +29,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements Re
         Session session = sessionFactory.getCurrentSession();
         Criteria c = session.createCriteria(Report.class);
         c.add(Restrictions.eq("frequency","daily"));
+        c.add(Restrictions.eq("isActive",true));
         return c.list();
 
     }
@@ -38,6 +39,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements Re
         Session session = sessionFactory.getCurrentSession();
         Criteria c = session.createCriteria(Report.class);
         c.add(Restrictions.eq("frequency","monthly"));
+        c.add(Restrictions.eq("isActive",true));
         return c.list();
 
     }
@@ -47,6 +49,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Report, Integer> implements Re
         Session session = sessionFactory.getCurrentSession();
         Criteria c = session.createCriteria(Report.class);
         c.add(Restrictions.eq("frequency","yearly"));
+        c.add(Restrictions.eq("isActive",true));
         return c.list();
     }
 
