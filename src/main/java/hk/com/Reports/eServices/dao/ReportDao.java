@@ -12,4 +12,5 @@ public interface ReportDao extends GenericDao <Report, Integer> {
     public List<Report> getMonthlyReport();
     public List<Report> getYearlyReport();
     public List<Report> deleteByID(int id);
+    public void updateLastRun(int id);
 }

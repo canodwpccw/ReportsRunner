@@ -100,6 +100,7 @@ public class ReportServiceImpl implements ReportService{
         } else {
             generatePDFCrystalReport(report, frequency);
         }
+        reportDao.updateLastRun(report.getId());
     }
 
     @Override
