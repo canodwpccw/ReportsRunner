@@ -32,6 +32,7 @@ public class IndexController {
         mav.addObject("hiddenModelBean",new HiddenModelBean());
         List<Report> reports =  reportService.getAllReport();
         mav.addObject("reports", reports);
+        mav.addObject("datesInStr", reportService.getDatesInStrFmt());
         return mav;
     }
 
@@ -68,8 +69,8 @@ public class IndexController {
         for(Report report:dailyReports){
             System.out.println("Generating " + report.getReportId() + "...");
             try {
-                reportService.generatePDF(report,"DAILY");
-                System.out.println( "SUCESS!" );
+                reportService.generatePDF(report,report.getFrequency());
+                System.out.println( "SUCCESS!" );
             } catch (ParseException e) {
                 System.out.println( "FAILED!" );
                 e.printStackTrace();

@@ -1,5 +1,11 @@
 package hk.com.Reports.eServices.service;
 
+import com.crystaldecisions.sdk.occa.report.application.ReportClientDocument;
+import com.crystaldecisions.sdk.occa.report.data.IConnectionInfo;
+import com.crystaldecisions.sdk.occa.report.data.ITable;
+import com.crystaldecisions.sdk.occa.report.exportoptions.ReportExportFormat;
+import com.crystaldecisions.sdk.occa.report.lib.PropertyBag;
+import com.crystaldecisions.sdk.occa.report.lib.ReportSDKException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hk.com.Reports.eServices.dao.ReportDao;
@@ -8,8 +14,6 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +22,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -49,6 +46,7 @@ public class ReportServiceImpl implements ReportService{
     private final DateTimeFormatter JASPER_STRING_DATE_FORMAT_PARAM = DateTimeFormatter.ofPattern("yyyyMMdd");
     private final DateTimeFormatter STRING_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd.HHmmss");
     private final LocalDateTime TODAY = LocalDateTime.now();
+
 
     @Transactional
 
@@ -97,12 +95,29 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
     public void generatePDF(Report report,String frequency) throws ParseException, SQLException, JRException {
-        generateReport(report,frequency);
+        if ((report.getTemplateType().equalsIgnoreCase("jasper"))) {
+            generatePDFJasperReport(report, frequency);
+        } else {
+            generatePDFCrystalReport(report, frequency);
+        }
+        reportDao.updateLastRun(report.getId());
     }
 
     @Override
     public List<Report> deleteByID(int id) {
         return reportDao.deleteByID(id);
+    }
+
+    @Override
+    public HashMap<String, String> getDatesInStrFmt() {
+        HashMap<String,String> datesInStr = new HashMap<>();
+        datesInStr.put("dailyStartdate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.minus(1, DAYS) ));
+        datesInStr.put("dailyEnddate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.minus(1, DAYS) ));
+        datesInStr.put("monthlyStartdate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.withDayOfMonth(1)));
+        datesInStr.put("monthlyEnddate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.lastDayOfMonth())));
+        datesInStr.put("yearlyStartdate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.firstDayOfYear())));
+        datesInStr.put("yearlyEnddate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.lastDayOfYear())));
+        return datesInStr;
     }
 
     private boolean uploadJasperFiles(Report report) {
@@ -121,9 +136,7 @@ public class ReportServiceImpl implements ReportService{
         return isUploaded;
     }
     private Map<String, Object> prepareParameters(String parameters,String frequency) {
-        Gson gson = new Gson();
-        Type type = new TypeToken<Map<String, String>>(){}.getType();
-        Map<String, Object> jasperParam = (Map)gson.fromJson(parameters, type);
+        Map<String, Object> jasperParam = prepareParameters(parameters);
         String startdate ="";
         String enddate ="";
         switch(frequency) {
@@ -151,7 +164,7 @@ public class ReportServiceImpl implements ReportService{
         System.out.println("PARAMETERS:\n" + jasperParam.toString());
         return jasperParam;
     }
-    private void generateReport(Report report,String frequency) throws SQLException, JRException, ParseException {
+    private void generatePDFJasperReport(Report report, String frequency) throws SQLException, JRException, ParseException {
         Map<String, Object> parameters = prepareParameters(report.getParameters(),frequency);
         final String ROOT_FOLDER = env.getProperty("report.location") + report.getReportId() + "\\";
         final String TEMPLATE = report.getReportId() + ".jasper";
@@ -163,6 +176,62 @@ public class ReportServiceImpl implements ReportService{
         return sessionFactory.
                 getSessionFactoryOptions().getServiceRegistry().
                 getService(ConnectionProvider.class).getConnection();
+    }
+
+    public void generatePDFCrystalReport(Report report, String frequency){
+        HashMap<String,String> datasInStr =  getDatesInStrFmt();
+        final String ROOT_FOLDER = env.getProperty("report.location") + report.getReportId() + "\\";
+        final String TEMPLATE = report.getReportId() + ".rpt";
+        final String PDF = STRING_DATETIME_FORMAT.format(TODAY.minus(1, DAYS)) + "_" + report.getReportId() + ".pdf";
+        String report_name = ROOT_FOLDER + TEMPLATE;
+        String exportFileName = ROOT_FOLDER + PDF;
+        try {
+            ReportClientDocument clientDoc = new ReportClientDocument();
+            clientDoc.open(report_name, ReportExportFormat._PDF);
+            ITable table = clientDoc.getDatabaseController().getDatabase().getTables().getTable(0);
+            IConnectionInfo connectionInfo = table.getConnectionInfo();
+            PropertyBag propertyBag = connectionInfo.getAttributes();
+            propertyBag.clear();
+
+            propertyBag.put("URI", env.getProperty("db.eService.crystal.URI"));
+            propertyBag.put("Use JDBC", "true");
+            propertyBag.put("Database DLL", env.getProperty("db.eService.crystal.dll"));
+
+            connectionInfo.setAttributes(propertyBag);
+
+            connectionInfo.setUserName(env.getProperty("db.eService.crystal.username"));
+            connectionInfo.setPassword(env.getProperty("db.eService.crystal.password"));
+            table.setConnectionInfo(connectionInfo);
+            clientDoc.getDatabaseController().setTableLocation(table, table);
+/** START OF SETTING PARAMETERS **/
+            Map<String, Object> parameters = prepareParameters(report.getParameters());
+            for (String key : parameters.keySet()) {
+                clientDoc.getDataDefController().getParameterFieldController().setCurrentValue("", key, (String)parameters.get(key));
+            }
+/** START OF CREATING PDF FILE **/
+            ByteArrayInputStream bais = (ByteArrayInputStream) clientDoc.getPrintOutputController().export(ReportExportFormat.PDF);
+            int size = bais.available();
+            byte[] barray = new byte[size];
+            FileOutputStream fos = new FileOutputStream(new File(exportFileName));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(size);
+            int bytes = bais.read(barray, 0, size);
+            baos.write(barray, 0, bytes);
+            baos.writeTo(fos);
+            clientDoc.close();
+            bais.close();
+            baos.close();
+            fos.close();
+        }
+         catch (ReportSDKException ex) {
+            System.out.println("ReportSDKException" + ex);
+        } catch (Exception ex) {
+            System.out.println("Exception" + ex);
+        }
+    }
+    private Map<String, Object> prepareParameters(String parameters){
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, String>>(){}.getType();
+        return (Map)gson.fromJson(parameters, type);
     }
 
 }

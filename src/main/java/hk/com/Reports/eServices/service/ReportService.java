@@ -6,6 +6,7 @@ import net.sf.jasperreports.engine.JRException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 
 public interface ReportService {
@@ -18,4 +19,5 @@ public interface ReportService {
     public List<Report> getAllYearlyReports();
     public void generatePDF(Report report,String frequency) throws ParseException, SQLException, JRException;
     public List<Report> deleteByID(int id);
+    public HashMap<String, String> getDatesInStrFmt();
 }
