@@ -1,8 +1,5 @@
 package hk.com.Reports.eServices.controller;
 
-import com.crystaldecisions.sdk.occa.report.application.ReportClientDocument;
-import com.crystaldecisions.sdk.occa.report.exportoptions.ReportExportFormat;
-import com.crystaldecisions.sdk.occa.report.lib.ReportSDKException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hk.com.Reports.eServices.model.Report;
@@ -15,11 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import hk.com.Reports.eServices.model.ESGEN008;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,20 +30,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.Date;
-
 
 @Controller
 public class TestController {
@@ -52,11 +47,18 @@ public class TestController {
     private SessionFactory sessionFactory;
 
     @Autowired
+    private Environment env;
+
+    @Autowired
     private ReportService reportService;
 
-    @RequestMapping(value = {"/generateReport"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
+    @Autowired
+    private DataSource dataSource;
+
+    @RequestMapping(value={"/generateReport"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
     public ModelAndView addReportPost(@ModelAttribute("report") Report report)
-            throws IOException, SQLException, JRException, ParseException {
+            throws IOException, SQLException, JRException, ParseException
+    {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("esgen");
 
@@ -77,17 +79,16 @@ public class TestController {
 
     private Map<String, Object> prepareParameters(String parameters) throws ParseException {
         Gson gson = new Gson();
-        Type type = new TypeToken<Map<String, String>>() {
-        }.getType();
-        Map<String, Object> myMap = (Map) gson.fromJson(parameters, type);
+        Type type = new TypeToken<Map<String, String>>(){}.getType();
+        Map<String, Object> myMap = (Map)gson.fromJson(parameters, type);
 
         myMap.remove("TRANS_DATE");
         myMap.remove("TRANS_YEAR");
         myMap.remove("PRINT_DATE");
         myMap.remove("PRINT_TIME");
 
-        String startdate = (String) myMap.get("startdate");
-        String enddate = (String) myMap.get("enddate");
+        String startdate = (String)myMap.get("startdate");
+        String enddate = (String)myMap.get("enddate");
 
         myMap.put("startdate", new String(convertDateToString(convertToDate(startdate))));
         myMap.put("enddate", new String(convertDateToString(convertToDate(enddate))));
@@ -104,7 +105,7 @@ public class TestController {
         JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\reports\\ESGEN008\\\\ESGEN008.pdf");
     }
 
-    @RequestMapping(value = {"/index"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value={"/index"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     public ModelAndView indexGet() {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("esgen");
@@ -124,11 +125,22 @@ public class TestController {
         return strDate;
     }
 
-    @RequestMapping(value = "/testCrystal", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public String testCrystal(){
-//        reportService.generatePDFCrystalReport();
-        return "asdasdasdasd";
+    @RequestMapping(value = "testCreatePDF",method = RequestMethod.GET, produces = "application/pdf")
+    public void generateReport(String json, HttpServletRequest request, HttpServletResponse response){
+        try {
+            Report report = reportService.getReportByID(2);
+            Map<String,Object> map = new HashMap<>();
+            map.put("data0","HKS");
+            map.put("data1","HKS");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(env.getProperty("report.location")+"\\"+report.getReportId()+"\\"+report.getReportId()+"."+report.getTemplateType(),map,dataSource.getConnection());
+            JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

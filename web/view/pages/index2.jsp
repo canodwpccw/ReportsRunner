@@ -1,8 +1,8 @@
 <%@ page import="com.google.gson.GsonBuilder" %>
 <%@ page import="com.google.gson.Gson" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,12 +108,24 @@
         report.id = reportsArray[reportId].id;
         report.parameters = prepareParametersInJSON();
         alert("SENDING... " + JSON.stringify(report));
-        var sendRquest = $.ajax({
-            type: 'POST',
-            url: 'url',
-            data: JSON.stringify(report),
-            async:true
-        });
+        $("#jsonStr").val(JSON.stringify(report));
+        // $("#jsonStr").val(JSON.stringify(report));
+        window.open("","newWindow");
+        $("#reportForm").submit();
+    <%--$.ajax({--%>
+            <%--contentType : 'application/json; charset=utf-8',--%>
+            <%--dataType : 'json',--%>
+            <%--type: 'POST',--%>
+            <%--url: '${pageContext.request.contextPath}/testCreatePDF',--%>
+            <%--data: JSON.stringify(report),--%>
+            <%--success: function (data,xhr) {--%>
+                <%--var win = window.open();--%>
+                <%--win.document.write(data);--%>
+            <%--},error: function (data,textStatus,xhr) {--%>
+                <%--alert("error "+textStatus+" "+ xhr.status);--%>
+            <%--},--%>
+            <%--async:true--%>
+        <%--});--%>
     }
 
 
@@ -153,8 +165,49 @@
     [type=reset], [type=submit], button, html [type=button] {
         -webkit-appearance: button;
     }
+    .btn {
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        border: 1px solid transparent;
+        padding: 4px 8px;
+        font-size: 12px;
+        line-height: 1.5;
+        border-radius: .25rem;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 1px 5px;
+        height: 25px;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
     .param_key{
         font-weight: bold;
+    }
+    body {
+        margin: 0;
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;
     }
 </style>
 <body>
@@ -188,8 +241,8 @@
                     <td>${rep.reportTitle}</td>
                     <td>${rep.frequency}</td>
                     <td>${rep.templateType}</td>
-                    <td>${rep.lastRun}</td>
-                    <td>TODO</td>
+                    <td>01-Oct-2018</td>
+                    <td>01-Oct-2018</td>
                     <td>Report was created.</td>
                     <td>
                         <button type="button" class="btn btn-secondary"
@@ -243,6 +296,9 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" onclick="runReport()">Run</button>
+                <form:form id="reportForm" action="${pageContext.request.contextPath}/getPdf" method="post" modelAttribute="hiddenModelBean" target="newWindow">
+                    <form:hidden path="hiddenValue" id="jsonStr"/>
+                </form:form>
             </div>
         </div>
     </div>
