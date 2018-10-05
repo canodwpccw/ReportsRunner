@@ -236,7 +236,9 @@
             <c:forEach var="rep" items="${reports}">
                 <tr id="tr-${rep.id}">
                     <td>
-                        <b>${rep.reportId}</b>
+                        <a target="_blank" rel="noopener noreferrer" href="${pageContext.request.contextPath}/generate/${rep.id}">
+                            <b>${rep.reportId}</b>
+                        </a>
                     </td>
                     <td>${rep.module}</td>
                     <td>${rep.reportTitle}</td>
