@@ -2,6 +2,7 @@ package hk.com.Reports.eServices.controller;
 
 import hk.com.Reports.eServices.model.Report;
 import hk.com.Reports.eServices.dao.ReportDao;
+import hk.com.Reports.eServices.model.utility.HiddenModelBean;
 import hk.com.Reports.eServices.service.ReportService;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class IndexController {
     public ModelAndView index(Model m){
         ModelAndView mav = new ModelAndView();
         mav.setViewName("index2");
+        mav.addObject("hiddenModelBean",new HiddenModelBean());
         List<Report> reports =  reportService.getAllReport();
         mav.addObject("reports", reports);
         return mav;

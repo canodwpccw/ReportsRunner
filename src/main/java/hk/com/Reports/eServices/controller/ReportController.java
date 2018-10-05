@@ -1,8 +1,14 @@
 package hk.com.Reports.eServices.controller;
 
+import com.google.gson.Gson;
+import hk.com.Reports.eServices.model.JasperReportDTO;
 import hk.com.Reports.eServices.model.Report;
+import hk.com.Reports.eServices.model.utility.HiddenModelBean;
 import hk.com.Reports.eServices.service.ReportService;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
@@ -12,18 +18,29 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.core.env.Environment;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Properties;
 
 @Controller
 public class ReportController {
     @Autowired
     private ReportService reportService;
+
+
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    private DataSource dataSource;
 
     @RequestMapping(value = "/addReport", method = RequestMethod.GET)
     public ModelAndView addReportGet() {
@@ -74,5 +91,28 @@ public class ReportController {
         return jasperFile;
     }
 
-
+    @RequestMapping(value = "getPdf", method = RequestMethod.POST, produces = "application/pdf")
+    public @ResponseBody void getPdf(@ModelAttribute("hiddenModelBean") HiddenModelBean hiddenModelBean, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String json = hiddenModelBean.getHiddenValue();
+            Gson gson = new Gson();
+            JasperReportDTO jasperReportDTO = gson.fromJson(json, JasperReportDTO.class);
+            HashMap<String, Object> result = gson.fromJson(jasperReportDTO.getParameters(),HashMap.class);
+            Report report = reportService.getReportByID(Integer.parseInt(jasperReportDTO.getId()));
+            if(report.getTemplateType().equalsIgnoreCase("jasper")){
+                JasperPrint jasperPrint = JasperFillManager.fillReport
+                        (env.getProperty("report.location") + "\\" + report.getReportId() + "\\" + report.getReportId() + "." + report.getTemplateType(),
+                                result, dataSource.getConnection());
+                JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+            }else if(report.getTemplateType().equalsIgnoreCase("rpt")){
+                //TODO Macor <3
+            }
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
