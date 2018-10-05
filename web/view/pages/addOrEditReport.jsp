@@ -13,6 +13,7 @@
                 var fileName = e.target.files[0].name;
                 var fileStr = fileName.split(".");
                 $("#reportId").val(fileStr[0]);
+                $("#templateType").val(fileStr[1]);
             });
         });
 
@@ -76,6 +77,11 @@
                     <td><form:label path="reportId">Report ID:</form:label></td>
                         <%--<td><form:input type="text" path="reportId"/></td>--%>
                     <td><form:input path="reportId" type="text" class="form-control" aria-label="Small"
+                                    aria-describedby="inputGroup-sizing-sm" readonly="true"/></td>
+                </tr>
+                <tr>
+                    <td><form:label path="templateType">Report ID:</form:label></td>
+                    <td><form:input path="templateType" type="text" class="form-control" aria-label="Small"
                                     aria-describedby="inputGroup-sizing-sm" readonly="true"/></td>
                 </tr>
                 <tr>

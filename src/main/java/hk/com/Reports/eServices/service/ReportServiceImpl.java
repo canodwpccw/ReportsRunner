@@ -43,7 +43,7 @@ public class ReportServiceImpl implements ReportService{
     private ReportDao reportDao;
     @Autowired
     private SessionFactory sessionFactory;
-    private final DateTimeFormatter JASPER_STRING_DATE_FORMAT_PARAM = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private final DateTimeFormatter  JASPER_STRING_DATE_FORMAT_PARAM = DateTimeFormatter.ofPattern("yyyyMMdd");
     private final DateTimeFormatter STRING_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd.HHmmss");
     private final LocalDateTime TODAY = LocalDateTime.now();
 
