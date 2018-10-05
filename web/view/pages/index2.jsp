@@ -16,6 +16,7 @@
     <script src="${pageContext.request.contextPath}/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="${pageContext.request.contextPath}/webjars/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/bootstrap-datepicker/1.3.0/css/datepicker.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/web-resource/css/ReportsRunner.css"/>
     <title>ReportsRunner</title>
 </head>
 

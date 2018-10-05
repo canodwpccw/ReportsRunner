@@ -18,7 +18,7 @@
 
         function addRow() {
             var rowCount = $('#paramTable>tbody:last>tr').length;
-            var trString = " " +
+            var trString = "" +
                 "<tr>" +
                 "<td class='td-param'>" +
                 "<input type=\"text\" id=\"keyInput-" + rowCount + "\" class=\"keyinput form-control\" aria-label=\"Small\" aria-describedby=\"inputGroup-sizing-sm\"/>" +
@@ -77,6 +77,18 @@
                         <%--<td><form:input type="text" path="reportId"/></td>--%>
                     <td><form:input path="reportId" type="text" class="form-control" aria-label="Small"
                                     aria-describedby="inputGroup-sizing-sm" readonly="true"/></td>
+                </tr>
+                <tr>
+                    <td><form:label path="reportTitle">Title:</form:label></td>
+                    <td><form:input path="reportTitle" type="text" class="form-control" aria-label="Small"
+                                    aria-describedby="inputGroup-sizing-sm"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td><form:label path="module">Module:</form:label></td>
+                    <td><form:input path="module" type="text" class="form-control" aria-label="Small"
+                                    aria-describedby="inputGroup-sizing-sm"/>
+                    </td>
                 </tr>
                 <tr>
                     <td><form:label path="multipartFiles">Template Location:</form:label></td>
