@@ -21,10 +21,7 @@ import org.springframework.core.env.Environment;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -105,7 +102,10 @@ public class ReportController {
                                 result, dataSource.getConnection());
                 JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
             }else if(report.getTemplateType().equalsIgnoreCase("rpt")){
-                //TODO Macor <3
+                report.setParameters(jasperReportDTO.getParameters());
+                byte[] barray= reportService.generatePDFCrystalReportStream(report);
+                OutputStream outputStream = response.getOutputStream();
+                outputStream.write(barray);
             }
         } catch (JRException e) {
             e.printStackTrace();

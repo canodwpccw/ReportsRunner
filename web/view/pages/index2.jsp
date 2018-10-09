@@ -57,9 +57,10 @@
         var parameters = JSON.parse(reportsArray[reportId].parameters.replace(/'/gi, '"'));
         var parameterHtml ="";
         parameterHtml+="<table class='table table-borderless'>";
-        parameterHtml+= datepickerParam("startdate",startdate);
-        parameterHtml+= datepickerParam("enddate",enddate);
-
+        if(reportsArray[reportId].templateType==="jasper"){
+            parameterHtml+= datepickerParam("startdate",startdate);
+            parameterHtml+= datepickerParam("enddate",enddate);
+        }
         $.each(parameters, function( key, value ) {
             parameterHtml+="<tr>";
             parameterHtml+="<td class='param_key'>"+key+"</td>";
@@ -80,6 +81,7 @@
         reportObj.reportTitle = "${rep.reportTitle}";
         reportObj.parameters = "${rep.parameters}";
         reportObj.frequency = "${rep.frequency}";
+        reportObj.templateType = "${rep.templateType}";
         reportsArray["${rep.reportId}"] = reportObj;
         </c:forEach>
     }

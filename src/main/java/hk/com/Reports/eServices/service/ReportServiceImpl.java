@@ -103,6 +103,7 @@ public class ReportServiceImpl implements ReportService{
         reportDao.updateLastRun(report.getId());
     }
 
+
     @Override
     public List<Report> deleteByID(int id) {
         return reportDao.deleteByID(id);
@@ -178,7 +179,7 @@ public class ReportServiceImpl implements ReportService{
                 getService(ConnectionProvider.class).getConnection();
     }
 
-    public void generatePDFCrystalReport(Report report, String frequency){
+    public void generatePDFCrystalReport(Report report,String frequency){
         HashMap<String,String> datasInStr =  getDatesInStrFmt();
         final String ROOT_FOLDER = env.getProperty("report.location") + report.getReportId() + "\\";
         final String TEMPLATE = report.getReportId() + ".rpt";
@@ -227,6 +228,53 @@ public class ReportServiceImpl implements ReportService{
         } catch (Exception ex) {
             System.out.println("Exception" + ex);
         }
+    }
+
+    @Override
+    public byte[] generatePDFCrystalReportStream(Report report){
+        HashMap<String,String> datasInStr =  getDatesInStrFmt();
+        final String ROOT_FOLDER = env.getProperty("report.location") + report.getReportId() + "\\";
+        final String TEMPLATE = report.getReportId() + ".rpt";
+        final String PDF = STRING_DATETIME_FORMAT.format(TODAY.minus(1, DAYS)) + "_" + report.getReportId() + ".pdf";
+        String report_name = ROOT_FOLDER + TEMPLATE;
+        String exportFileName = ROOT_FOLDER + PDF;
+        try {
+            ReportClientDocument clientDoc = new ReportClientDocument();
+            clientDoc.open(report_name, ReportExportFormat._PDF);
+            ITable table = clientDoc.getDatabaseController().getDatabase().getTables().getTable(0);
+            IConnectionInfo connectionInfo = table.getConnectionInfo();
+            PropertyBag propertyBag = connectionInfo.getAttributes();
+            propertyBag.clear();
+
+            propertyBag.put("URI", env.getProperty("db.eService.crystal.URI"));
+            propertyBag.put("Use JDBC", "true");
+            propertyBag.put("Database DLL", env.getProperty("db.eService.crystal.dll"));
+
+            connectionInfo.setAttributes(propertyBag);
+
+            connectionInfo.setUserName(env.getProperty("db.eService.crystal.username"));
+            connectionInfo.setPassword(env.getProperty("db.eService.crystal.password"));
+            table.setConnectionInfo(connectionInfo);
+            clientDoc.getDatabaseController().setTableLocation(table, table);
+/** START OF SETTING PARAMETERS **/
+            Map<String, Object> parameters = prepareParameters(report.getParameters());
+            for (String key : parameters.keySet()) {
+                clientDoc.getDataDefController().getParameterFieldController().setCurrentValue("", key, (String)parameters.get(key));
+            }
+/** START OF CREATING PDF FILE **/
+            ByteArrayInputStream bais = (ByteArrayInputStream) clientDoc.getPrintOutputController().export(ReportExportFormat.PDF);
+            int size = bais.available();
+            byte[] barray = new byte[size];
+            clientDoc.close();
+            bais.close();
+            return barray;
+        }
+        catch (ReportSDKException ex) {
+            System.out.println("ReportSDKException" + ex);
+        } catch (Exception ex) {
+            System.out.println("Exception" + ex);
+        }
+        return null;
     }
     private Map<String, Object> prepareParameters(String parameters){
         Gson gson = new Gson();

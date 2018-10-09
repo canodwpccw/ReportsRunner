@@ -29,7 +29,7 @@ public class ReportJob {
     @Autowired
     ReportService reportService;
 
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 */1 5 * * *")
     public void runTestDaily() {
         List<Report> dailyReports = reportService.getAllDailyReports();
         for (Report report : dailyReports) {
@@ -51,5 +51,6 @@ public class ReportJob {
             }
         }
     }
+
 
 }
