@@ -265,8 +265,11 @@ public class ReportServiceImpl implements ReportService{
             ByteArrayInputStream bais = (ByteArrayInputStream) clientDoc.getPrintOutputController().export(ReportExportFormat.PDF);
             int size = bais.available();
             byte[] barray = new byte[size];
+            FileOutputStream fos = new FileOutputStream(new File(exportFileName));
+            int bytes = bais.read(barray, 0, size);
             clientDoc.close();
             bais.close();
+            fos.close();
             return barray;
         }
         catch (ReportSDKException ex) {
