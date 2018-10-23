@@ -171,7 +171,24 @@ public class ReportServiceImpl implements ReportService{
         final String TEMPLATE = report.getReportId() + ".jasper";
         final String PDF = STRING_DATETIME_FORMAT.format(TODAY.minus(1, DAYS)) + "_" + report.getReportId() + ".pdf";
         JasperPrint jasperPrint = JasperFillManager.fillReport(ROOT_FOLDER + TEMPLATE, parameters, getDBConnection());
-        JasperExportManager.exportReportToPdfFile(jasperPrint, ROOT_FOLDER + PDF);
+        File file = new File(ROOT_FOLDER + PDF);
+        try(FileOutputStream fop = new FileOutputStream(file)) {
+            // if file doesn't exists, then create it
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            // get the content in bytes
+            byte[] contentInBytes = JasperExportManager.exportReportToPdf(jasperPrint);;
+
+            fop.write(contentInBytes);
+            fop.flush();
+            fop.close();
+            System.out.println("Done");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     private Connection getDBConnection() throws SQLException {
         return sessionFactory.
@@ -260,6 +277,55 @@ public class ReportServiceImpl implements ReportService{
             Map<String, Object> parameters = prepareParameters(report.getParameters());
             for (String key : parameters.keySet()) {
                 clientDoc.getDataDefController().getParameterFieldController().setCurrentValue("", key, (String)parameters.get(key));
+            }
+/** START OF CREATING PDF FILE **/
+            ByteArrayInputStream bais = (ByteArrayInputStream) clientDoc.getPrintOutputController().export(ReportExportFormat.PDF);
+            int size = bais.available();
+            byte[] barray = new byte[size];
+            FileOutputStream fos = new FileOutputStream(new File(exportFileName));
+            int bytes = bais.read(barray, 0, size);
+            clientDoc.close();
+            bais.close();
+            fos.close();
+            return barray;
+        }
+        catch (ReportSDKException ex) {
+            System.out.println("ReportSDKException" + ex);
+        } catch (Exception ex) {
+            System.out.println("Exception" + ex);
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] generatePDFCrystalReportStreamGet(String reportId,Map<String,Object>param){
+        HashMap<String,String> datasInStr =  getDatesInStrFmt();
+        final String ROOT_FOLDER = env.getProperty("report.location") + reportId + "\\";
+        final String TEMPLATE = reportId + ".rpt";
+        final String PDF = STRING_DATETIME_FORMAT.format(TODAY.minus(1, DAYS)) + "_" + reportId + ".pdf";
+        String report_name = ROOT_FOLDER + TEMPLATE;
+        String exportFileName = ROOT_FOLDER + PDF;
+        try {
+            ReportClientDocument clientDoc = new ReportClientDocument();
+            clientDoc.open(report_name, ReportExportFormat._PDF);
+            ITable table = clientDoc.getDatabaseController().getDatabase().getTables().getTable(0);
+            IConnectionInfo connectionInfo = table.getConnectionInfo();
+            PropertyBag propertyBag = connectionInfo.getAttributes();
+            propertyBag.clear();
+
+            propertyBag.put("URI", env.getProperty("db.eService.crystal.URI"));
+            propertyBag.put("Use JDBC", "true");
+            propertyBag.put("Database DLL", env.getProperty("db.eService.crystal.dll"));
+
+            connectionInfo.setAttributes(propertyBag);
+
+            connectionInfo.setUserName(env.getProperty("db.eService.crystal.username"));
+            connectionInfo.setPassword(env.getProperty("db.eService.crystal.password"));
+            table.setConnectionInfo(connectionInfo);
+            clientDoc.getDatabaseController().setTableLocation(table, table);
+/** START OF SETTING PARAMETERS **/
+            for (String key : param.keySet()) {
+                clientDoc.getDataDefController().getParameterFieldController().setCurrentValue("", key, (String)param.get(key));
             }
 /** START OF CREATING PDF FILE **/
             ByteArrayInputStream bais = (ByteArrayInputStream) clientDoc.getPrintOutputController().export(ReportExportFormat.PDF);

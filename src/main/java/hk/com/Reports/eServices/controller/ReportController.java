@@ -24,7 +24,9 @@ import javax.sql.DataSource;
 import java.io.*;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 @Controller
@@ -114,5 +116,31 @@ public class ReportController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping(value = "/createPdf/{reportID}",method = RequestMethod.GET,produces = "application/pdf")
+    public @ResponseBody void createPdf(@PathVariable("reportID")String reportID,HttpServletResponse response, HttpServletRequest request){
+        Map<String,Object> param = new HashMap<>();
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            System.out.println(paramName);
+            String[] paramValues = request.getParameterValues(paramName);
+            String paramValue = null;
+            for (int i = 0; i < paramValues.length; i++) {
+                 paramValue=paramValues[i];
+                System.out.println(paramValue);
+            }
+            param.put(paramName,paramValue);
+        }
+        byte[] barray= reportService.generatePDFCrystalReportStreamGet(reportID,param);
+        OutputStream outputStream = null;
+        try {
+            outputStream = response.getOutputStream();
+            outputStream.write(barray);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

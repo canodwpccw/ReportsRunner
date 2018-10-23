@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface ReportService {
     public void testMethod();
@@ -20,6 +21,7 @@ public interface ReportService {
     public List<Report> getAllYearlyReports();
     public void generatePDF(Report report,String frequency) throws ParseException, SQLException, JRException;
     public byte[] generatePDFCrystalReportStream(Report report);
+    public byte[] generatePDFCrystalReportStreamGet(String reportId, Map<String,Object> param);
     public List<Report> deleteByID(int id);
     public HashMap<String, String> getDatesInStrFmt();
 }

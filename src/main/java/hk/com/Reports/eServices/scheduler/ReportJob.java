@@ -29,27 +29,33 @@ public class ReportJob {
     @Autowired
     ReportService reportService;
 
-    @Scheduled(cron = "0 */1 5 * * *")
-    public void runTestDaily() {
-        List<Report> dailyReports = reportService.getAllDailyReports();
-        for (Report report : dailyReports) {
-            System.out.println("Generating " + report.getReportId() + "...");
-            try {
-                reportService.generatePDF(report, report.getFrequency());
-                System.out.println("SUCCESS!");
-            } catch (ParseException e) {
-                System.out.println("FAILED!");
-                e.printStackTrace();
-            } catch (SQLException e) {
-                System.out.println("FAILED!");
-                e.printStackTrace();
-            } catch (JRException e) {
-                System.out.println("FAILED!");
-                e.printStackTrace();
-            } finally {
-                continue;
-            }
-        }
+//    @Scheduled(cron = "0 0/1 * * * *")
+//    public void runTestDaily() {
+//        List<Report> dailyReports = reportService.getAllDailyReports();
+//        for (Report report : dailyReports) {
+//            System.out.println("Generating " + report.getReportId() + "...");
+//            try {
+//                reportService.generatePDF(report, report.getFrequency());
+//                System.out.println("SUCCESS!");
+//            } catch (ParseException e) {
+//                System.out.println("FAILED!");
+//                e.printStackTrace();
+//            } catch (SQLException e) {
+//                System.out.println("FAILED!");
+//                e.printStackTrace();
+//            } catch (JRException e) {
+//                System.out.println("FAILED!");
+//                e.printStackTrace();
+//            } finally {
+//                continue;
+//            }
+//        }
+//    }
+
+
+    @Scheduled(cron = "0 0/1 * * * *")
+    public void runTestDailyTest() {
+        System.out.println("test");
     }
 
 
