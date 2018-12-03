@@ -1,9 +1,15 @@
 package hk.com.Reports.eServices.service;
 
+import com.crystaldecisions.reports.sdk.DatabaseController;
+import com.crystaldecisions.reports.sdk.ISubreportClientDocument;
+import com.crystaldecisions.reports.sdk.ParameterFieldController;
 import com.crystaldecisions.sdk.occa.report.application.ReportClientDocument;
+import com.crystaldecisions.sdk.occa.report.data.ConnectionInfoKind;
 import com.crystaldecisions.sdk.occa.report.data.IConnectionInfo;
 import com.crystaldecisions.sdk.occa.report.data.ITable;
+import com.crystaldecisions.sdk.occa.report.data.Tables;
 import com.crystaldecisions.sdk.occa.report.exportoptions.ReportExportFormat;
+import com.crystaldecisions.sdk.occa.report.lib.IStrings;
 import com.crystaldecisions.sdk.occa.report.lib.PropertyBag;
 import com.crystaldecisions.sdk.occa.report.lib.ReportSDKException;
 import com.google.gson.Gson;
@@ -120,6 +126,119 @@ public class ReportServiceImpl implements ReportService{
         datesInStr.put("yearlyEnddate", JASPER_STRING_DATE_FORMAT_PARAM.format(TODAY.with(TemporalAdjusters.lastDayOfYear())));
         return datesInStr;
     }
+
+    @Override
+    public byte[] requestToGeneratePDF(String reportId, Map<String,Object> param) {
+        final String REPORT_NAME = env.getProperty("report.location") + reportId + "\\" + reportId + ".rpt";
+        final String EXPORT_FILE = env.getProperty("report.location") + reportId + "\\" + reportId + ".pdf";
+
+
+        try {
+            com.crystaldecisions.reports.sdk.ReportClientDocument reportClientDoc = new com.crystaldecisions.reports.sdk.ReportClientDocument();
+            reportClientDoc.open(REPORT_NAME, 0);
+            switch_tables(reportClientDoc.getDatabaseController());
+            IStrings subreportNames = reportClientDoc.getSubreportController().getSubreportNames();
+            for (int i = 0; i < subreportNames.size(); i++ ) {
+                ISubreportClientDocument subreportClientDoc = reportClientDoc.getSubreportController().getSubreport(subreportNames.getString(i));
+
+                switch_tables(subreportClientDoc.getDatabaseController());
+            }
+            reportClientDoc.getReportSource();
+            System.out.println("Setting Params");
+            ParameterFieldController paramFieldController = reportClientDoc.getDataDefController().getParameterFieldController();
+
+
+            for (String key : param.keySet()) {
+                paramFieldController.setCurrentValue("",key, (String)param.get(key));
+            }
+            System.out.println("Finished Setting Params");
+            System.out.println("Generating PDF");
+            ByteArrayInputStream byteArrayInputStream = (ByteArrayInputStream)reportClientDoc.getPrintOutputController().export(ReportExportFormat.PDF);
+            System.out.println("Done");
+            return  writeToFileSystem(byteArrayInputStream, EXPORT_FILE);
+        }
+        catch(ReportSDKException ex) {
+            System.out.println(ex);
+        }
+        catch(Exception ex) {
+            System.out.println(ex);
+        }
+        return new byte[0];
+    }
+
+    public void switch_tables(DatabaseController databaseController) throws ReportSDKException {
+        final String SERVERNAME = "dedaps";
+        final String CONNECTION_STRING =
+                "Use JDBC=b(true);Connection URL=s("+env.getProperty("db.eService.crystal.host") +");"
+                +"Database Class Name=s("+env.getProperty("db.eService.driver")+");"
+                +"Server=s(dedaps);User ID=s("+env.getProperty("db.eService.crystal.username")+");"
+                +"Password=;Trusted_Connection=b(false);"
+                +"JDBC Connection String=s(!oracle.jdbc.driver.OracleDriver!jdbc:oracle:thin:"+env.getProperty("db.eService.crystal.username")
+                +"/"+env.getProperty("db.eService.crystal.password")+ env.getProperty("db.ep2.host") +")";
+
+
+        System.out.println("CONNECTION_STRING \n" + CONNECTION_STRING);
+
+
+        final String JNDI_DATASOURCE_NAME = "testing";
+        final String DATABASE_CLASS_NAME = env.getProperty("db.eService.driver");
+        final String DATABASE_DLL = "crdb_jdbc.dll";
+        final String DBURI = env.getProperty("db.eService.crystal.URI");
+        final String DBUSERNAME = env.getProperty("db.eService.crystal.username");
+        final String DBPASSWORD = env.getProperty("db.eService.crystal.password");
+
+
+        Tables tables = databaseController.getDatabase().getTables();
+
+        for (int i = 0; i < tables.size(); i++) {
+            ITable table = tables.getTable(i);
+            table.setName(table.getName());
+            table.setAlias(table.getAlias());
+            IConnectionInfo connectionInfo = table.getConnectionInfo();
+            PropertyBag innerProp = connectionInfo.getAttributes();
+            innerProp.clear();
+            PropertyBag propertyBag = new PropertyBag();
+
+            propertyBag.put("Trusted_Connection", "b(false)");
+            propertyBag.put("Server Name", SERVERNAME);
+            propertyBag.put("Connection String", CONNECTION_STRING);
+            propertyBag.put("Server Type", "JDBC (JNDI)");
+            propertyBag.put("JNDI Datasource Name", JNDI_DATASOURCE_NAME);
+            propertyBag.put("Database Class Name", DATABASE_CLASS_NAME);
+            propertyBag.put("Use JDBC", "true");
+            propertyBag.put("URI", DBURI);
+            propertyBag.put("Database DLL", DATABASE_DLL);
+
+            connectionInfo.setAttributes(propertyBag);
+            connectionInfo.setUserName(DBUSERNAME);
+            connectionInfo.setPassword(DBPASSWORD);
+            connectionInfo.setKind(ConnectionInfoKind.SQL);
+
+            table.setConnectionInfo(connectionInfo);
+            databaseController.setTableLocation(table, tables.getTable(i));
+        }
+    }
+
+    public byte[] writeToFileSystem(ByteArrayInputStream byteArrayInputStream, String exportFile) throws Exception {
+        byte byteArray[] = new byte[byteArrayInputStream.available()];
+        File file = new File(exportFile);
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(byteArrayInputStream.available());
+        int x = byteArrayInputStream.read(byteArray, 0, byteArrayInputStream.available());
+
+        byteArrayOutputStream.write(byteArray, 0, x);
+        byteArrayOutputStream.writeTo(fileOutputStream);
+
+        //Close streams.
+        byteArrayInputStream.close();
+        byteArrayOutputStream.close();
+        fileOutputStream.close();
+        return byteArray;
+
+    }
+
+
 
     private boolean uploadJasperFiles(Report report) {
         boolean isUploaded = false;

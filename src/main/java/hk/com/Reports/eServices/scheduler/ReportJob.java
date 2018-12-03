@@ -53,7 +53,7 @@ public class ReportJob {
 //    }
 
 
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void runTestDailyTest() {
         System.out.println("test");
     }

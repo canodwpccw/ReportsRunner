@@ -24,4 +24,5 @@ public interface ReportService {
     public byte[] generatePDFCrystalReportStreamGet(String reportId, Map<String,Object> param);
     public List<Report> deleteByID(int id);
     public HashMap<String, String> getDatesInStrFmt();
+    public byte[] requestToGeneratePDF(String reportId, Map<String,Object> param);
 }

@@ -118,8 +118,9 @@ public class ReportController {
         }
     }
 
-    @RequestMapping(value = "/createPdf/{reportID}",method = RequestMethod.GET,produces = "application/pdf")
-    public @ResponseBody void createPdf(@PathVariable("reportID")String reportID,HttpServletResponse response, HttpServletRequest request){
+    @RequestMapping(value = "/createPdf",method = RequestMethod.GET,produces = "application/pdf")
+    public @ResponseBody void createPdf(HttpServletResponse response, HttpServletRequest request){
+        String ReportID = request.getParameter("ReportID");
         Map<String,Object> param = new HashMap<>();
         Enumeration<String> parameterNames = request.getParameterNames();
         while (parameterNames.hasMoreElements()) {
@@ -133,7 +134,8 @@ public class ReportController {
             }
             param.put(paramName,paramValue);
         }
-        byte[] barray= reportService.generatePDFCrystalReportStreamGet(reportID,param);
+        param.remove("ReportID");
+        byte[] barray= reportService.requestToGeneratePDF(ReportID,param);
         OutputStream outputStream = null;
         try {
             outputStream = response.getOutputStream();
@@ -141,6 +143,13 @@ public class ReportController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
+    @RequestMapping(value = "/demo", method = RequestMethod.GET)
+    public ModelAndView requestPDF() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("demo");
+        return mav;
+    }
+
 }
