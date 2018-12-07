@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/bootstrap/4.1.3/css/bootstrap.min.css"/>
     <script src="${pageContext.request.contextPath}/webjars/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/web-resource/css/ReportsRunner.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/web-resource/css/font-awesome.min.css"/>
     <script>
         $(function () {
             $('input[type="file"]').change(function (e) {
@@ -34,6 +35,8 @@
 
 
         function submitForm() {
+            $('#modal-builder').modal({backdrop: 'static',keyboard: true});
+            $(".hdControl").prop('disabled',status);
             var params = [];
             var parameter ="";
             $(".keyinput").each(function (i, row) {
@@ -93,7 +96,7 @@
                 <tr>
                     <td><form:label path="module">Module:</form:label></td>
                     <td><form:input path="module" type="text" class="form-control" aria-label="Small"
-                                    aria-describedby="inputGroup-sizing-sm"/>
+                                    aria-describedby="inputGroup-sizing-sm" value="eServices2"/>
                     </td>
                 </tr>
                 <tr>
@@ -150,6 +153,18 @@
         </div>
     </form:form>
 </div>
+    </div>
+</div>
+
+
+
+<div class="modal" id="modal-builder" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="padding-top:25px">
+            <center><h3 id="mdl_txt">Saving...</h3></center>
+            <center><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></center>
+            <br/><br/>
+        </div>
     </div>
 </div>
 </body>
